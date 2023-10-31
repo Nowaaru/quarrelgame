@@ -1,14 +1,14 @@
 import { Controller, OnStart, OnTick } from "@flamework/core";
-import { HumanoidController, OnRespawn } from "@rbxts/quarrelgame-framework";
+import { HumanoidController, OnMatchRespawn, OnRespawn } from "@rbxts/quarrelgame-framework";
 
-interface LoadedHumanoidController {
-
+interface LoadedHumanoidController
+{
     GetHumanoidController(): NonNullable<ReturnType<HumanoidController["GetHumanoidController"]>>;
     GetSensors(): NonNullable<ReturnType<HumanoidController["GetSensors"]>>;
 }
 
 @Controller({})
-export class Humanoid2D extends HumanoidController implements OnStart, OnRespawn, OnTick
+export class Humanoid2D extends HumanoidController implements OnStart, OnMatchRespawn, OnTick
 {
     public IsControllerActive(controller: ControllerBase)
     {
@@ -17,9 +17,7 @@ export class Humanoid2D extends HumanoidController implements OnStart, OnRespawn
 
     public Rotate(towards: Vector3)
     {
-
         if (!this.assertController())
-
             return;
 
         this.GetHumanoidController()!.FacingDirection = towards;
@@ -28,18 +26,15 @@ export class Humanoid2D extends HumanoidController implements OnStart, OnRespawn
     private UpdateMoveDirection()
     {
         if (!this.assertController())
-
-            return;
+            return print();
 
         const controller = this.GetHumanoidController()!;
-        const currentHumanoid = this.character!.Humanoid;
+        const currentHumanoid = this.character?.Humanoid;
 
-        const { MoveDirection } = currentHumanoid;
+        const { MoveDirection = Vector3.zero } = currentHumanoid;
         controller.MovingDirection = MoveDirection;
         if (this.autoRotate && MoveDirection.Magnitude > 0)
-            
             this.Rotate(MoveDirection);
-
     }
 
     public canEnterSwimming()
@@ -50,19 +45,18 @@ export class Humanoid2D extends HumanoidController implements OnStart, OnRespawn
     public canEnterFalling()
     {
         if (!this.assertController() || !this.assertCharacter())
-
             return;
 
         const controller = this.GetHumanoidController()!;
         const sensors = this.GetSensors()!;
 
         return (
-            !sensors.GroundSensor.SensedPart === undefined 
+            !sensors.GroundSensor.SensedPart === undefined
             && !sensors.ClimbSensor.SensedPart
             && !(
-                    this.IsControllerActive(controller.AirController) 
-                    || sensors.SwimSensor.TouchingSurface
-                )
+                this.IsControllerActive(controller.AirController)
+                || sensors.SwimSensor.TouchingSurface
+            )
         )
             || this.character!.Humanoid.GetState() === Enum.HumanoidStateType.Jumping;
     }
@@ -70,13 +64,11 @@ export class Humanoid2D extends HumanoidController implements OnStart, OnRespawn
     public canEnterStanding()
     {
         if (!this.assertController() || !this.assertCharacter())
-        
             return;
 
         const controller = this.GetHumanoidController()!;
-        print(this.GetSensors()!.GroundSensor.SearchDistance);
 
-        return this.GetSensors()!.GroundSensor.SensedPart 
+        return this.GetSensors()!.GroundSensor.SensedPart
             && this.character!.Humanoid.GetState() !== Enum.HumanoidStateType.Jumping
             && !this.IsControllerActive(controller.GroundController);
     }
@@ -84,19 +76,17 @@ export class Humanoid2D extends HumanoidController implements OnStart, OnRespawn
     public canEnterClimbing()
     {
         if (!this.assertController())
-
             return;
 
         const controller = this.GetHumanoidController()!;
 
         return this.GetSensors()!.ClimbSensor.SensedPart && !this.IsControllerActive(controller.ClimbController);
     }
-    
+
     private UpdateState()
     {
         if (!this.assertController() || !this.assertCharacter())
-
-            return;
+            return print("ouch...", this.assertController(), this.assertCharacter());
 
         const controller = this.GetHumanoidController()!;
         const humanoid = this.character!.Humanoid;
@@ -106,7 +96,7 @@ export class Humanoid2D extends HumanoidController implements OnStart, OnRespawn
         {
             humanoid.ChangeState(HumanoidStateType.Swimming);
             controller.ActiveController = controller.SwimController;
-        }   
+        }
         else if (this.canEnterClimbing())
         {
             humanoid.ChangeState(HumanoidStateType.Climbing);
@@ -118,10 +108,10 @@ export class Humanoid2D extends HumanoidController implements OnStart, OnRespawn
             controller.ActiveController = controller.GroundController;
         }
         else if (this.canEnterFalling())
-        { 
+        {
             humanoid.ChangeState(HumanoidStateType.Freefall);
-            controller.ActiveController = controller.AirController 
-        };
+            controller.ActiveController = controller.AirController;
+        }
 
         if (controller.ActiveController !== controller.GroundController)
             print("controller not ground - active controller:", controller.ActiveController);
@@ -130,7 +120,6 @@ export class Humanoid2D extends HumanoidController implements OnStart, OnRespawn
     private assertCharacter(errorOut?: boolean)
     {
         if (!errorOut && !this.character)
-
             return false;
 
         assert(this.character, "character does not exist");
@@ -140,15 +129,18 @@ export class Humanoid2D extends HumanoidController implements OnStart, OnRespawn
     private assertController(errorOut?: boolean)
     {
         if (!errorOut && !this.GetHumanoidController())
-
             return false;
 
         assert(this.GetHumanoidController(), "humanoid controller does not exist");
         return true;
     }
 
-    onRespawn(character: Model) {
-        const [ controllers, sensors ] = super.onRespawn(character);
+    async onMatchRespawn(character: Model & { Humanoid: Humanoid; })
+    {
+        const [ controllers, sensors ] = await super.onMatchRespawn(character);
+        this.character = character as typeof this.character;
+        // print("character:", character);
+
         const humanoid = (character as typeof this.character).Humanoid;
 
         const { GroundController } = this.GetHumanoidController()!;
@@ -159,7 +151,6 @@ export class Humanoid2D extends HumanoidController implements OnStart, OnRespawn
         GroundController.AccelerationTime = 0.15;
         GroundController.DecelerationTime = 0.2;
         GroundController.TurnSpeedFactor = 2;
-        
 
         const { GroundSensor, ClimbSensor } = this.GetSensors()!;
         GroundSensor.SearchDistance = GroundController.GroundOffset + 0.25;
@@ -171,7 +162,7 @@ export class Humanoid2D extends HumanoidController implements OnStart, OnRespawn
         return $tuple(controllers, sensors);
     }
 
-    onStart(): void 
+    onStart(): void
     {
         super.onStart();
     }
@@ -184,5 +175,5 @@ export class Humanoid2D extends HumanoidController implements OnStart, OnRespawn
 
     protected autoRotate = false;
 
-    declare protected character: (Model & { Humanoid: globalThis.Humanoid; });
+    declare protected character: Model & { Humanoid: globalThis.Humanoid; };
 }
