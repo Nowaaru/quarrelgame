@@ -1,13 +1,19 @@
-import { Controller, OnStart } from "@flamework/core";
+import { Controller, Dependency, OnStart } from "@flamework/core";
+import { MatchController, MotionInput, OnArenaChange } from "@rbxts/quarrelgame-framework";
 import { Players } from "@rbxts/services";
+import { CharacterController } from "client/controllers/character";
+import { Combat } from "client/controllers/combat";
 import { PlatformCameraController2D } from "client/controllers/platformcamera2d";
-import { MatchController, OnArenaChange } from "@rbxts/quarrelgame-framework"
-import { Combat } from "./combat";
 
 @Controller({})
 export class RespawnController2D implements OnStart, OnArenaChange
 {
-    constructor(private readonly cameraController: PlatformCameraController2D, private readonly matchController: MatchController, private readonly combatController: Combat)
+    constructor(
+        private readonly cameraController: PlatformCameraController2D,
+        private readonly matchController: MatchController,
+        private readonly combatController: Combat,
+        private motionInputController: MotionInput.MotionInputController,
+    )
     {
     }
 
@@ -26,8 +32,9 @@ export class RespawnController2D implements OnStart, OnArenaChange
                 Players.GetPlayers().find((a) => a.GetAttribute("ParticipantId") === n)?.Character as Model
             ),
         );
+
+        this.motionInputController.BindController(Dependency<CharacterController>());
         this.cameraController.SetCameraEnabled(true);
-        this.combatController.Enable()
-        
+        this.combatController.Enable();
     }
 }
