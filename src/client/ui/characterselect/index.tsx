@@ -6,8 +6,7 @@ import CharacterData from "./characterdata";
 import CharacterItem from "./characteritem";
 import CharacterPortrait3D from "./characterportrait";
 
-export interface CharacterSelectProps
-{
+export interface CharacterSelectProps {
     Characters: ReadonlyMap<string, Character.Character>;
     OnSelect?: (selectedCharacter: Character.Character) => void;
 }
@@ -16,8 +15,7 @@ export const ChainsImage = "rbxassetid://137751994";
 
 export const DotsImage = "rbxassetid://4376776276";
 
-export default function CharacterSelect(characterSelectProps: CharacterSelectProps = { Characters: CharactersList })
-{
+export default function CharacterSelect(characterSelectProps: CharacterSelectProps = { Characters: CharactersList }) {
     const { Characters, OnSelect } = characterSelectProps ?? { Characters: CharactersList };
     const [selectedCharacter, setSelectedCharacter] = useState<Character.Character | undefined>();
 
@@ -143,17 +141,14 @@ export default function CharacterSelect(characterSelectProps: CharacterSelectPro
                             PaddingBottom={new UDim(0, 8)}
                             PaddingTop={new UDim(0, 8)}
                         />
-                        {(() =>
-                        {
+                        {(() => {
                             const allCharacters: Roact.Element[] = [];
-                            for (const [, character] of Characters)
-                            {
+                            for (const [, character] of Characters) {
                                 allCharacters.push(
                                     <CharacterItem
                                         Character={character}
                                         Selected={selectedCharacter === character}
-                                        OnSelected={(newSelectedCharacter) =>
-                                        {
+                                        OnSelected={(newSelectedCharacter) => {
                                             OnSelect?.(newSelectedCharacter);
                                             setSelectedCharacter(newSelectedCharacter);
                                         }}
