@@ -31,7 +31,7 @@ export class CharacterController extends CharacterController2D implements OnMatc
         super.onMatchRespawn(character);
     }
 
-    onMatchStart(matchId: string, matchData: ReturnType<MatchController["GetCurrentMatch"]>): void
+    onMatchStart(matchId: string, matchData: ReturnType<MatchController["GetMatchData"]>): void
     {
     }
 

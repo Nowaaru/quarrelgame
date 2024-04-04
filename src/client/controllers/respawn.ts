@@ -23,7 +23,7 @@ export class RespawnController2D implements OnStart, OnArenaChange
 
     onArenaChanged()
     {
-        const currentMatch = this.matchController.GetCurrentMatch();
+        const currentMatch = this.matchController.GetMatchData();
         assert(currentMatch, "current match is undefined");
         assert(currentMatch.Arena, "match arena is undefined");
 
