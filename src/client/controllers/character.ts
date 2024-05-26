@@ -28,6 +28,7 @@ export class CharacterController extends CharacterController2D implements OnMatc
 
     async onMatchRespawn(character: Model): Promise<void>
     {
+        print("hmmmmmmmmmmm");
         super.onMatchRespawn(character);
     }
 
