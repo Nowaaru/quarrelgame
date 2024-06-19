@@ -17,11 +17,10 @@
     devShells.${system}.default = pkgs.mkShell {
       buildInputs = with pkgs; [
         dprint
-        vscodium-fhs
       ];
 
       shellHook = ''
-        codium . & disown;
+        nvim .;
         exit;
       '';
     };
