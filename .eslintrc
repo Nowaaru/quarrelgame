@@ -1,0 +1,103 @@
+{
+    "ignorePatterns": [
+        "/out",
+        "/node_modules"
+    ],
+    "overrides": [
+        {
+            "files": [
+                "**/*.ts",
+                "**/*.tsx"
+            ]
+        }
+    ],
+    "parserOptions": {
+        "useJSXTextNode": true,
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+        "project": "./tsconfig.json",
+        "jsx": true
+    },
+    "plugins": [
+        "@typescript-eslint",
+        "roblox-ts"
+    ],
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:roblox-ts/recommended"
+        // "plugin:prettier/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "rules": {
+        "padding-line-between-statements": [
+            "error",
+            {
+                "blankLine": "always",
+                "prev": "block-like",
+                "next": "return"
+            },
+            {
+                "blankLine": "never",
+                "prev": "var",
+                "next": "return"
+            },
+            {
+                "blankLine": "always",
+                "prev": "if",
+                "next": "*"
+            }
+        ],
+        "prefer-exponentiation-operator": "warn",
+        // spacing
+        "no-whitespace-before-property": "warn",
+        "no-mixed-spaces-and-tabs": "error",
+        "roblox-ts/lua-truthiness": "off",
+        "roblox-ts/no-array-pairs": "off",
+        "semi": [
+            "error",
+            "always"
+        ],
+        "max-statements-per-line": [
+            "warn",
+            {
+                "max": 1
+            }
+        ],
+        "no-confusing-arrow": "warn",
+        "no-constant-condition": "warn",
+        "no-unused-expressions": "warn",
+        "no-case-declarations": "error",
+        "no-trailing-spaces": "warn",
+        "no-mixed-operators": "warn",
+        "no-duplicate-case": "error",
+        "no-sequences": "error",
+        "consistent-this": [
+            "warn",
+            "that"
+        ],
+        "no-else-return": "warn",
+        "spaced-comment": "warn",
+        "no-func-assign": "error",
+        "no-lone-blocks": "warn",
+        "no-extra-semi": "warn",
+        "no-dupe-args": "error",
+        "prefer-const": "error",
+        "no-dupe-keys": "error",
+        "no-lonely-if": "warn",
+        "space-before-blocks": "warn",
+        "new-parens": [
+            "error",
+            "always"
+        ],
+        "max-params": [
+            "error",
+            8
+        ],
+        "sort-vars": "warn",
+        "no-empty": "error",
+        "no-tabs": "error",
+        "no-var": "error",
+        "yoda": "warn"
+    }
+}
