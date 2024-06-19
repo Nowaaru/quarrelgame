@@ -10,7 +10,10 @@ export class TestService implements OnStart, OnInit
     private readonly testParticipant: Promise<Participant> = new Promise(
         (res) =>
         {
-            Players.PlayerAdded.Once((player) => res(Dependency<Components>().waitForComponent(player, Participant)));
+            Players.PlayerAdded.Once((player) => {
+                task.wait(1);
+                res(Dependency<Components>().waitForComponent(player, Participant));
+            });
         },
     );
 
@@ -65,8 +68,17 @@ export class TestService implements OnStart, OnInit
                 },
             });
 
-            if (match)
-                match.StartMatch(participant);
+
+
+            // TODO: add match.ready check
+            // so the player doesn't have
+            // to insta-select their character
+            // within 4 seconds ugh...
+
+            match.Ready.Once(() => {
+                if (match)
+                    match.StartMatch();
+            });
         });
 
         return true;
