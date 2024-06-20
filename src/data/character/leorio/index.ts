@@ -8,9 +8,9 @@ const LEORIO = new Character.CharacterBuilder2D()
     .SetDescription("Test character 2")
     .SetModel(Character.GetCharacterModel<CharacterModels>().shedletsky as never)
     .SetEasiness(5)
-    .SetAttack(Input.Slash, CloseSlash)
-    .SetAttack(Input.Kick, ForwardKick)
-    .SetAttack(Input.Heavy, LowHeavy)
+    .SetAttack([Motion.Neutral, Input.Slash], CloseSlash)
+    .SetAttack([Motion.Neutral, Input.Kick], ForwardKick)
+    .SetAttack([Motion.Down, Input.Heavy], LowHeavy)
     .SetAnimation(
         EntityState.Idle,
         new Animation.AnimationBuilder()

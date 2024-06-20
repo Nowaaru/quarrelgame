@@ -8,9 +8,9 @@ const Gio = new Character.CharacterBuilder3D()
     .SetHeader("CHECK THIS DASH")
     .SetModel(Character.GetCharacterModel<CharacterModels>().jane as never)
     .SetEasiness(5)
-    .SetAttack(Input.Slash, CloseSlash)
-    .SetAttack(Input.Kick, ForwardKick)
-    .SetAttack(Input.Heavy, LowHeavy)
+    .SetAttack([Motion.Neutral, Input.Slash], CloseSlash)
+    .SetAttack([Motion.Neutral, Input.Kick], ForwardKick)
+    .SetAttack([Motion.Down, Input.Heavy], LowHeavy)
     .SetAnimation(
         EntityState.Idle,
         new Animation.AnimationBuilder()

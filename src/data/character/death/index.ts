@@ -8,9 +8,9 @@ const Death = new Character.CharacterBuilder3D()
     .SetHeader("GOTSUTEKI")
     .SetModel(Character.GetCharacterModel<CharacterModels>().death, Character.CharacterRigType.Raw)
     .SetEasiness(5)
-    .SetAttack(Input.Slash, FarSlash)
-    .SetAttack(Input.Kick, ForwardKick)
-    .SetAttack(Input.Heavy, LowHeavy)
+    .SetAttack([Motion.Neutral, Input.Slash], FarSlash)
+    .SetAttack([Motion.Neutral, Input.Kick], ForwardKick)
+    .SetAttack([Motion.Down, Input.Heavy], LowHeavy)
     .SetAnimation(
         EntityState.Idle,
         new Animation.AnimationBuilder()

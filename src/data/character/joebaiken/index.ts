@@ -1,4 +1,4 @@
-import { EntityState, Input, Hitbox, Skill, Animation, Character } from "@rbxts/quarrelgame-framework";
+import { Motion, EntityState, Input, Hitbox, Skill, Animation, Character } from "@rbxts/quarrelgame-framework";
 import { CloseSlash, ForwardKick, LowHeavy } from "./normals";
 
 const JOEBAIKEN = new Character.CharacterBuilder2D()
@@ -8,9 +8,9 @@ const JOEBAIKEN = new Character.CharacterBuilder2D()
     .SetDescription("Test character 4")
     .SetModel(Character.GetCharacterModel<CharacterModels>().brighteyes as never)
     .SetEasiness(3)
-    .SetAttack(Input.Slash, CloseSlash)
-    .SetAttack(Input.Kick, ForwardKick)
-    .SetAttack(Input.Heavy, LowHeavy)
+    .SetAttack([Motion.Neutral, Input.Slash], CloseSlash)
+    .SetAttack([Motion.Neutral, Input.Kick], ForwardKick)
+    .SetAttack([Motion.Down, Input.Heavy], LowHeavy)
     .SetAnimation(
         EntityState.Idle,
         new Animation.AnimationBuilder()

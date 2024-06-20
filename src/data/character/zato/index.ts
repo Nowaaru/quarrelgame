@@ -8,9 +8,9 @@ const ZATO = new Character.CharacterBuilder2D()
     .SetDescription("Test character 4")
     .SetModel(Character.GetCharacterModel<CharacterModels>().dusek as never)
     .SetEasiness(2)
-    .SetAttack(Input.Slash, CloseSlash)
-    .SetAttack(Input.Kick, ForwardKick)
-    .SetAttack(Input.Heavy, LowHeavy)
+    .SetAttack([Motion.Neutral, Input.Slash], CloseSlash)
+    .SetAttack([Motion.Neutral, Input.Kick], ForwardKick)
+    .SetAttack([Motion.Down, Input.Heavy], LowHeavy)
     .SetAnimation(
         EntityState.Idle,
         new Animation.AnimationBuilder()

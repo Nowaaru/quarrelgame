@@ -8,9 +8,9 @@ const BRISKET = new Character.CharacterBuilder2D()
     .SetDescription("Test character 3")
     .SetModel(Character.GetCharacterModel<CharacterModels>().roblox as never)
     .SetEasiness(4)
-    .SetAttack(Input.Slash, CloseSlash)
-    .SetAttack(Input.Kick, ForwardKick)
-    .SetAttack(Input.Heavy, LowHeavy)
+    .SetAttack([Motion.Neutral, Input.Slash], FarSlash)
+    .SetAttack([Motion.Neutral, Input.Kick], ForwardKick)
+    .SetAttack([Motion.Down, Input.Heavy], LowHeavy)
     .SetAnimation(
         EntityState.Idle,
         new Animation.AnimationBuilder()
