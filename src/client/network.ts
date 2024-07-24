@@ -1,9 +1,9 @@
 
 import { Dependency } from "@flamework/core";
-import {  } from "shared/network";
 import { Jump } from "@rbxts/quarrelgame-framework";
 import type { Frames } from "@rbxts/quarrelgame-framework";
 import { ClientEvents, ClientFunctions, ResourceController, QuarrelMaps } from "@rbxts/quarrelgame-framework";
+import { Players } from "@rbxts/services";
 
 export interface OnFrame
 {
@@ -36,7 +36,9 @@ ClientFunctions.RequestLoadMap.setCallback((mapId: string) =>
     });
 });
 
-ClientEvents.Jump.connect(Jump);
+ClientEvents.Jump.connect((jumpPower) => {
+    Jump(Players.LocalPlayer.Character as any, jumpPower);
+});
 
 export const Events = ClientEvents;
 export const Functions = ClientFunctions;
