@@ -28,6 +28,9 @@
           },
           "node_modules": {
             "$className": "Folder",
+            "@grifon-games": {
+              "$path": "node_modules/@grifon-games"
+            },
             "@rbxts": {
               "$path": "node_modules/@rbxts"
             },
