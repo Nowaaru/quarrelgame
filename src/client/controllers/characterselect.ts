@@ -8,7 +8,7 @@ export class CharacterSelect implements OnInit, OnCharacterSelected {
     {}
 
     onCharacterSelected(character: Character.Character): void {
-        task.wait(2);
+        print("readying...");
         ClientFunctions.Ready();
     }
 

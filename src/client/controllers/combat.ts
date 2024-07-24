@@ -17,6 +17,7 @@ export class Combat extends CombatController2D implements OnRespawn, OnInit, OnK
             [Enum.KeyCode.J, Input.Heavy],
             [Enum.KeyCode.K, Input.Dust],
             [Enum.KeyCode.L, Input.Sweep],
+            [Enum.KeyCode.Z, Input.Dash]
         ]);
     }
 
