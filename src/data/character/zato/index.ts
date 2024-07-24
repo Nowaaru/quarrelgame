@@ -3,8 +3,8 @@ import { CloseSlash, ForwardKick, LowHeavy } from "./normals";
 
 const ZATO = new Character.CharacterBuilder2D()
     .SetName("ZATO-R6")
-    .SetSubheader("EDDIE MAKES ME WANT TO ED DIE")
-    .SetHeader("EDDEEZ NUTS GOTTEM")
+    .SetSubheader("THAT'S IT. DON'T KICK A HORSE WHILE IT'S DOWN.")
+    .SetHeader("REST IN PEACE")
     .SetDescription("Test character 4")
     .SetModel(Character.GetCharacterModel<CharacterModels>().dusek as never)
     .SetEasiness(2)
