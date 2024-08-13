@@ -1,11 +1,18 @@
 import { Dependency, Modding, OnInit, OnStart, Service } from "@flamework/core";
-import { CommandController, CommandHandler, QuarrelCommands } from "@rbxts/quarrelgame-framework";
+import { CommandService } from "@quarrelgame-framework/server";
+
+// TODO: re-implement commands
 
 @Service({})
-export class CommandService extends CommandHandler implements OnStart, OnInit
+export class CommandHandler
 {
-    constructor()
-    {
-        super(script);
+    constructor(protected commandHandler: CommandService)
+    {}
+
+    onStart(): void {
+    }
+
+    onInit(): void {
+        this.commandHandler.Register(script);
     }
 }

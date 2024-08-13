@@ -1,23 +1,24 @@
-import { Dependency, OnInit, OnStart, Service } from "@flamework/core";
+import { Dependency, Modding, OnInit, OnStart, Reflect, Service } from "@flamework/core";
 import { TestService } from "./testservice";
-import { QuarrelGame } from "@rbxts/quarrelgame-framework";
+import { QuarrelGame } from "@quarrelgame-framework/server";
 import Characters from "data/character";
+
 
 @Service({})
 export class Game implements OnInit, OnStart
 {
-    protected quarrelGame!: QuarrelGame;
+    constructor(private quarrelGame: QuarrelGame, private testService: TestService)
+    {
 
-    protected TestService!: TestService;
+    }
 
     onInit(): void | Promise<void> {
-        this.quarrelGame = Dependency<QuarrelGame>();
-        this.TestService = Dependency<TestService>();
+        print("qg:", this.quarrelGame);
     }
 
     onStart(): void {
         print("Quarrel Game Example started.");
         this.quarrelGame.SetCharacters(Characters);
-        this.TestService.tryMatchTest();
+        this.testService.tryMatchTest();
     }
 }

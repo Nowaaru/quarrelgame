@@ -1,29 +1,31 @@
-import { Controller, Dependency, OnInit, OnRender, OnStart } from "@flamework/core";
+import { Controller, Modding, OnRender, OnStart } from "@flamework/core";
 import {
+
     CharacterController2D,
-    Entity,
-    EntityAttributes,
-    Map,
+    Input,
     MatchController,
-    MatchPhase,
-    MatchSettings,
-    MatchState,
     OnArenaChange,
     OnMatchRespawn,
     OnMatchStart,
-    ParticipantAttributes,
-} from "@rbxts/quarrelgame-framework";
-import { MotionInput } from "@rbxts/quarrelgame-framework";
+} from "@quarrelgame-framework/client";
+
+import {
+    MotionInput,
+} from "@quarrelgame-framework/common";
+
+
 import { Players } from "@rbxts/services";
 import { Combat } from "client/controllers/combat";
 import { Humanoid2D } from "client/controllers/humanoid";
 
+print("MC:", MatchController)
+
 @Controller({})
-export class CharacterController extends CharacterController2D implements OnMatchRespawn, OnRender, OnArenaChange, OnStart, OnMatchStart
+export class QGCharacterController extends CharacterController2D implements OnMatchRespawn, OnRender, OnArenaChange, OnStart, OnMatchStart
 {
-    constructor()
+    constructor(protected humanoidController: Humanoid2D, protected matchController: MatchController, protected input: Input)
     {
-        super(Dependency<Combat>(), Dependency<MotionInput.MotionInputController>(), Dependency<Humanoid2D>());
+        super(humanoidController, matchController, input);
     }
 
     async onMatchRespawn(character: Model): Promise<void>
@@ -32,8 +34,9 @@ export class CharacterController extends CharacterController2D implements OnMatc
         super.onMatchRespawn(character);
     }
 
-    onMatchStart(matchId: string, matchData: ReturnType<MatchController["GetMatchData"]>): void
+    onMatchStart()
     {
+
     }
 
     // TODO: Implement mechanic that only turns characters around mid-air
@@ -86,6 +89,4 @@ export class CharacterController extends CharacterController2D implements OnMatc
             print("no arena");
         }
     }
-
-    declare protected humanoidController: Humanoid2D;
 }

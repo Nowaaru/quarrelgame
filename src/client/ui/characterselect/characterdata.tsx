@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-array-constructor */
 import Roact from "@rbxts/roact";
-import { Character } from "@rbxts/quarrelgame-framework";
+import { Character } from "@quarrelgame-framework/common";
 
 export enum CharacterDataAlignment
 {

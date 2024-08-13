@@ -1,4 +1,4 @@
-import type { Map } from "@rbxts/quarrelgame-framework";
+import type { Map } from "@quarrelgame-framework/common";
 
 export = {
     name: "Happy Home",

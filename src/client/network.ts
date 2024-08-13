@@ -1,26 +1,32 @@
 
 import { Dependency } from "@flamework/core";
-import { Jump } from "@rbxts/quarrelgame-framework";
-import type { Frames } from "@rbxts/quarrelgame-framework";
-import { ClientEvents, ClientFunctions, ResourceController, QuarrelMaps } from "@rbxts/quarrelgame-framework";
+import { ResourceController } from "@quarrelgame-framework/client";
+import { Jump, QuarrelMaps, QuarrelFunctions as QGFFunctions, QuarrelEvents as QGFEvents } from "@quarrelgame-framework/common";
+import { GlobalFunctions, GlobalEvents } from "shared/network";
 import { Players } from "@rbxts/services";
+import { ICharacter } from "@quarrelgame-framework/types";
+
+export const Events = GlobalEvents.createClient({});
+export const Functions = GlobalFunctions.createClient({});
+
+export const QuarrelEvents = QGFEvents.createClient({disableIncomingGuards: true});
+export const QuarrelFunctions = QGFFunctions.createClient({disableIncomingGuards: true});
 
 export interface OnFrame
 {
     /**
      * Runs everytime a Game frame passes.
      */
-    onFrame(frameTime: Frames, tickRate: number): void;
+    onFrame(frameTime: number, tickRate: number): void;
 }
 
 const onFrameListeners: Set<OnFrame> = new Set();
-ClientEvents.Tick.connect(async (frameTime: Frames, tickRate: number) =>
+QuarrelEvents.Tick.connect(async (frameTime: number, tickRate: number) =>
 {
     for (const listener of onFrameListeners)
         listener.onFrame(frameTime, tickRate);
 });
-
-ClientFunctions.RequestLoadMap.setCallback((mapId: string) =>
+QuarrelFunctions.RequestLoadMap.setCallback((mapId: string) =>
 {
     return new Promise((res) =>
     {
@@ -36,9 +42,6 @@ ClientFunctions.RequestLoadMap.setCallback((mapId: string) =>
     });
 });
 
-ClientEvents.Jump.connect((jumpPower) => {
-    Jump(Players.LocalPlayer.Character as any, jumpPower);
+QuarrelEvents.Jump.connect((jumpPower) => {
+    Jump(Players.LocalPlayer.Character as ICharacter, jumpPower);
 });
-
-export const Events = ClientEvents;
-export const Functions = ClientFunctions;

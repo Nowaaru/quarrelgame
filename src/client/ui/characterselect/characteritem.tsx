@@ -3,7 +3,7 @@ import Roact from "@rbxts/roact";
 
 import { useEffect, useRef, useState } from "@rbxts/roact";
 import { RunService } from "@rbxts/services";
-import { Character } from "@rbxts/quarrelgame-framework";
+import { Character } from "@quarrelgame-framework/common";
 import CharacterPortrait3D from "./characterportrait";
 
 export interface CharacterItemProps

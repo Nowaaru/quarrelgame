@@ -1,8 +1,8 @@
 import { Components } from "@flamework/components";
 import { Dependency, OnInit, OnStart, Service } from "@flamework/core";
 import { Players, RunService, Workspace } from "@rbxts/services";
-import { Character, OnParticipantAdded, QuarrelGame, MatchService, ArenaTypeFlags, Participant, Entity } from "@rbxts/quarrelgame-framework";
-import { ServerFunctions } from "@rbxts/quarrelgame-framework";
+import { ArenaTypeFlags, QuarrelGame, MatchService, Participant }from "@quarrelgame-framework/server";
+import { QuarrelFunctions } from "server/network";
 
 @Service({})
 export class TestService implements OnStart, OnInit
@@ -10,17 +10,14 @@ export class TestService implements OnStart, OnInit
     private readonly testParticipant: Promise<Participant> = new Promise(
         (res) =>
         {
-            Players.PlayerAdded.Once((player) => {
-                task.wait(1);
-                res(Dependency<Components>().waitForComponent(player, Participant));
-            });
+            Players.PlayerAdded.Once((player) => res(Dependency<Components>().waitForComponent(player, Participant)));
         },
     );
 
     onInit()
     {
         this.deployJaneModel();
-        ServerFunctions.MatchTest.setCallback((player) => !!this.tryMatchTest());
+        QuarrelFunctions.MatchTest.setCallback((player) => !!this.tryMatchTest());
     }
 
     public deployJaneModel()
@@ -58,32 +55,36 @@ export class TestService implements OnStart, OnInit
         const matchService = Dependency<MatchService>();
         const quarrelGame = Dependency<QuarrelGame>();
 
-        this.testParticipant.then((participant) =>
-        {
-            const match = matchService.CreateMatch({
-                Participants: quarrelGame.GetAllParticipants(),
-                Settings: {
-                    Map: "happyhome",
-                    ArenaType: ArenaTypeFlags.ALLOW_2D,
-                },
-            });
+        if (!this.testParticipant)
+            
+            return error("no test participant");
+
+        const participant = this.testParticipant;
+
+        const match = matchService.CreateMatch({
+            Participants: quarrelGame.GetAllParticipants(),
+            Settings: {
+                Map: "happyhome",
+                ArenaType: ArenaTypeFlags.ALLOW_2D,
+            },
+        });
 
 
 
-            // TODO: add match.ready check
-            // so the player doesn't have
-            // to insta-select their character
-            // within 4 seconds ugh...
+        // TODO: add match.ready check
+        // so the player doesn't have
+        // to insta-select their character
+        // within 4 seconds ugh...
 
-            match.Ready.Once(() => {
-                if (match)
-                    match.StartMatch();
-            });
+        match.Ready.Once(() => {
+            if (match)
+                match.StartMatch();
         });
 
         return true;
     }
 
     onStart()
-    {}
+    {
+    }
 }

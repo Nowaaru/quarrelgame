@@ -1,4 +1,4 @@
-import { Motion, EntityState, Input, Hitbox, Skill, Animation, Character } from "@rbxts/quarrelgame-framework";
+import { Motion, EntityState, Input, Hitbox, Skill, Animation, Character } from "@quarrelgame-framework/common";
 import { CloseSlash, ForwardKick, LowHeavy } from "./normals";
 
 const JOEBAIKEN = new Character.CharacterBuilder2D()

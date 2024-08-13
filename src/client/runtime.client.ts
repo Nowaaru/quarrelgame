@@ -1,11 +1,10 @@
-import { Flamework } from "@flamework/core";
-import QuarrelGameFramework from "@rbxts/quarrelgame-framework";
-import "client/network";
+import { Flamework, Modding } from "@flamework/core";
+import { MatchController } from "@quarrelgame-framework/client";
 
-QuarrelGameFramework.Initialize().then(() =>
-{
-    Flamework.addPaths("src/client/components");
-    Flamework.addPaths("src/client/controllers");
+Flamework.addPaths("node_modules/@quarrelgame-framework/client/controllers");
+Flamework.addPaths("src/client/controllers");
+Flamework.addPaths("src/client/components");
+Flamework.addPaths("src/shared/components");
 
-    Flamework.ignite();
-});
+
+Flamework.ignite();

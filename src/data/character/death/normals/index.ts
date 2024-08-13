@@ -1,4 +1,4 @@
-import { Animation, Skill, Hitbox } from "@rbxts/quarrelgame-framework";
+import { Animation, Skill, Hitbox } from "@quarrelgame-framework/common";
 
 export const ForwardKick = new Skill.SkillBuilder()
     .SetName("Forward Kick")

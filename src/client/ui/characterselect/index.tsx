@@ -1,6 +1,6 @@
 import Roact, { useState } from "@rbxts/roact";
 import CharactersList from "data/character";
-import { Character, EntityState } from "@rbxts/quarrelgame-framework";
+import { Character, EntityState } from "@quarrelgame-framework/common";
 
 import CharacterData from "./characterdata";
 import CharacterItem from "./characteritem";

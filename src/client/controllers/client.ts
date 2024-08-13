@@ -1,16 +1,18 @@
 import { Controller, Dependency, OnInit } from "@flamework/core";
-import { CommandController } from "@rbxts/quarrelgame-framework";
 import { Players, StarterGui } from "@rbxts/services";
 
-import * as QuarrelGameFramework from "@rbxts/quarrelgame-framework"
+import { Client as QGFClient, CharacterSelectController } from "@quarrelgame-framework/client";
+import { CommandController } from "./command";
+import Characters from "data/character";
 
-@Controller({})
-export class Client extends QuarrelGameFramework.Client implements OnInit
+print("ruh roh raggy");
+export class Client extends QGFClient implements OnInit
 {
-    private commandController!: CommandController;
+    constructor(protected characterSelectController: CharacterSelectController, protected commandController: CommandController)
+    { super(); }
 
     onInit(): void {
-        this.commandController = Dependency<CommandController>();
+        print("i'm gonna blow up and act like i don't know nbobody!!")
 
         Players.LocalPlayer.CameraMinZoomDistance = 8;
         Players.LocalPlayer.CameraMaxZoomDistance = Players.LocalPlayer.CameraMinZoomDistance;
@@ -22,5 +24,6 @@ export class Client extends QuarrelGameFramework.Client implements OnInit
     onStart()
     {
         print("Example Client loaded.");
+        this.characterSelectController.SetCharacters(Characters);
     }
 }

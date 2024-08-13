@@ -1,5 +1,7 @@
 import { Controller, OnStart, OnTick } from "@flamework/core";
-import { HumanoidController, OnMatchRespawn, OnRespawn } from "@rbxts/quarrelgame-framework";
+import { OnMatchRespawn, OnRespawn } from "@quarrelgame-framework/client";
+import { HumanoidController } from "@quarrelgame-framework/client";
+import {ICharacter, Managed} from "@quarrelgame-framework/types";
 
 interface LoadedHumanoidController
 {
@@ -30,6 +32,9 @@ export class Humanoid2D extends HumanoidController implements OnStart, OnMatchRe
 
         const controller = this.GetHumanoidController()!;
         const currentHumanoid = this.character?.Humanoid;
+        if (!currentHumanoid)
+
+            return;
 
         const { MoveDirection = Vector3.zero } = currentHumanoid;
         controller.MovingDirection = MoveDirection;
@@ -135,13 +140,13 @@ export class Humanoid2D extends HumanoidController implements OnStart, OnMatchRe
         return true;
     }
 
-    async onMatchRespawn(character: Model & { Humanoid: Humanoid; })
+    async onMatchRespawn(character: Humanoid2D["character"])
     {
-        const [ controllers, sensors ] = await super.onMatchRespawn(character);
+        const [ controllers, sensors ] = await super.onMatchRespawn(character!);
         this.character = character as typeof this.character;
         // print("character:", character);
 
-        const humanoid = (character as typeof this.character).Humanoid;
+        const humanoid = (character as Humanoid2D["character"])!.Humanoid;
 
         const { GroundController } = this.GetHumanoidController()!;
         GroundController.GroundOffset = humanoid.HipHeight;
@@ -170,10 +175,8 @@ export class Humanoid2D extends HumanoidController implements OnStart, OnMatchRe
     onTick()
     {
         this.UpdateState();
-        this.UpdateMoveDirection();
+        // this.UpdateMoveDirection();
     }
 
     protected autoRotate = false;
-
-    declare protected character: Model & { Humanoid: globalThis.Humanoid; };
 }

@@ -1,12 +1,12 @@
 
-import { MotionInput } from "@rbxts/quarrelgame-framework/out/shared/util/input";
 import { Controller, OnStart } from "@flamework/core";
-import { MotionInputController } from "./motioninput";
-import { MotionInputHandling } from "@rbxts/quarrelgame-framework";
+import { Combat } from "./combat";
+import { MotionInput } from "@quarrelgame-framework/common";
+import { MotionInputHandling } from "@quarrelgame-framework/client";
 
 @Controller({})
 export class TestMotionInputController implements MotionInputHandling, OnStart {
-    constructor(protected motionInputController: MotionInputController)
+    constructor(protected motionInputController: Combat)
     {}
 
     onStart()
@@ -15,10 +15,10 @@ export class TestMotionInputController implements MotionInputHandling, OnStart {
     }
 
     onMotionInputChanged(motionInput: MotionInput): void {
-        warn(`Motion input changed. Current input: ${motionInput}.`);
+        // warn(`Motion input changed. Current input: ${motionInput}.`);
     }
 
     onMotionInputTimeout(motionInput: MotionInput): void {
-        warn(`Motion input timed out. Input before timeout: ${motionInput}.`);
+        // warn(`Motion input timed out. Input before timeout: ${motionInput}.`);
     }
 }

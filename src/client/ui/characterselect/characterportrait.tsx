@@ -3,7 +3,7 @@ import Roact, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "@r
 import { Components } from "@flamework/components";
 import { Dependency } from "@flamework/core";
 import Make from "@rbxts/make";
-import { Character, Animation, Animator, EntityState } from "@rbxts/quarrelgame-framework";
+import { Character, Animation, Animator, EntityState } from "@quarrelgame-framework/common";
 
 export interface CharacterDisplayProps
 {

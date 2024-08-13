@@ -1,4 +1,4 @@
-import { Character } from "@rbxts/quarrelgame-framework";
+import { Character } from "@quarrelgame-framework/common";
 type CharacterRig = Character.CharacterRig;
 
 export interface CharacterModel {

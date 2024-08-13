@@ -1,4 +1,4 @@
-import { EntityState, Input, Hitbox, Character, Skill, Animation, Motion } from "@rbxts/quarrelgame-framework";
+import { EntityState, Input, Hitbox, Character, Skill, Animation, Motion } from "@quarrelgame-framework/common";
 import { CloseSlash, ForwardKick, LowHeavy } from "./normals";
 
 const Gio = new Character.CharacterBuilder3D()

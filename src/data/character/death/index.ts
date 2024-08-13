@@ -1,4 +1,4 @@
-import { EntityState, Input, Hitbox, Character, Skill, Animation, Motion } from "@rbxts/quarrelgame-framework";
+import { EntityState, Input, Hitbox, Character, Skill, Animation, Motion } from "@quarrelgame-framework/common";
 import { FarSlash, ForwardKick, LowHeavy } from "./normals";
 
 const Death = new Character.CharacterBuilder3D()

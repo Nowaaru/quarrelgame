@@ -1,5 +1,5 @@
-import { Controller, Dependency, OnInit, OnPhysics, OnStart } from "@flamework/core";
-import { MatchController, OnMatchRespawn, CameraController2D, CameraMode2D, CameraFacing } from "@rbxts/quarrelgame-framework"
+import { Controller, Dependency, Modding, OnInit, OnPhysics, OnStart } from "@flamework/core";
+import { OnMatchRespawn, CameraController2D, CameraMode2D, CameraFacing, MatchController } from "@quarrelgame-framework/client";
 
 @Controller({})
 export class PlatformCameraController2D extends CameraController2D implements OnInit, OnPhysics, OnMatchRespawn, OnStart
@@ -8,7 +8,7 @@ export class PlatformCameraController2D extends CameraController2D implements On
 
     protected cameraMode: CameraMode2D = CameraMode2D.Single;
 
-    constructor()
+    constructor(protected readonly matchController: MatchController)
     {
         super();
     }
@@ -23,7 +23,7 @@ export class PlatformCameraController2D extends CameraController2D implements On
 
     public singularParticipantCameraHandler(participant: Model, emulateMultiCamera?: boolean)
     {
-        const currentMatchData = Dependency<MatchController>().GetMatchData();
+        const currentMatchData = this.matchController.GetMatchData();
         assert(currentMatchData, "currentMatchData is not defined");
 
         if (emulateMultiCamera)
@@ -57,7 +57,7 @@ export class PlatformCameraController2D extends CameraController2D implements On
 
     public multiParticipantCameraHandler(...characters: Model[]): void
     {
-        const currentMatchData = Dependency<MatchController>().GetMatchData();
+        const currentMatchData = this.matchController.GetMatchData();
         assert(this.character, "character is not defined");
         assert(currentMatchData, "currentMatchData is not defined");
 

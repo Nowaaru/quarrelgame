@@ -14,14 +14,14 @@
     "moduleDetection": "force",
     "strict": true,
     "target": "ESNext",
-    "typeRoots": ["node_modules/@rbxts", "node_modules/@flamework"],
+    "typeRoots": ["node_modules/@rbxts", "node_modules/@flamework", "node_modules/@quarrelgame-framework"],
 
     // configurable
     "rootDir": "src",
     "outDir": "out",
     "baseUrl": "src",
-    "incremental": true,
-    "tsBuildInfoFile": "out/tsconfig.tsbuildinfo",
+    "incremental": false,
+    // "tsBuildInfoFile": "out/tsconfig.tsbuildinfo",
 
     "experimentalDecorators": true,
     "plugins": [
