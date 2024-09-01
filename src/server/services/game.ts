@@ -4,21 +4,19 @@ import { QuarrelGame } from "@quarrelgame-framework/server";
 import Characters from "data/character";
 
 
+/*
+ * TODO: look into turning quarrelGame import into a decorator in quarrelgame-framework
+ */
 @Service({})
-export class Game implements OnInit, OnStart
+export class Game implements OnStart
 {
     constructor(private quarrelGame: QuarrelGame, private testService: TestService)
     {
 
     }
 
-    onInit(): void | Promise<void> {
-        print("qg:", this.quarrelGame);
-    }
-
     onStart(): void {
         print("Quarrel Game Example started.");
         this.quarrelGame.SetCharacters(Characters);
-        this.testService.tryMatchTest();
     }
 }
