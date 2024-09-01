@@ -6,10 +6,9 @@ import {
     CharacterSelectController,
     OnCharacterSelected,
 } from "@quarrelgame-framework/client";
-import { CommandController } from "./command";
 import Characters from "data/character";
 import { Animator, Character } from "@quarrelgame-framework/common";
-import { Functions, QuarrelFunctions } from "client/network";
+import { QuarrelFunctions } from "client/network";
 
 @Controller({})
 export class Client
@@ -18,7 +17,6 @@ export class Client
 {
     constructor(
         protected characterSelectController: CharacterSelectController,
-        protected commandController: CommandController,
     ) {
         super();
     }
@@ -33,7 +31,6 @@ export class Client
             Players.LocalPlayer.CameraMinZoomDistance;
 
         StarterGui.SetCoreGuiEnabled(Enum.CoreGuiType.All, false);
-        this.commandController.SetKeys(Enum.KeyCode.Backquote, Enum.KeyCode.F2);
 
         Animator.RegisterCharacters(Characters);
     }
