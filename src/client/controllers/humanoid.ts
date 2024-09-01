@@ -91,7 +91,7 @@ export class Humanoid2D extends HumanoidController implements OnStart, OnMatchRe
     private UpdateState()
     {
         if (!this.assertController() || !this.assertCharacter())
-            return print("ouch...", this.assertController(), this.assertCharacter());
+            return // print("ouch...", this.assertController(), this.assertCharacter());
 
         const controller = this.GetHumanoidController()!;
         const humanoid = this.character!.Humanoid;
@@ -118,8 +118,8 @@ export class Humanoid2D extends HumanoidController implements OnStart, OnMatchRe
             controller.ActiveController = controller.AirController;
         }
 
-        if (controller.ActiveController !== controller.GroundController)
-            print("controller not ground - active controller:", controller.ActiveController);
+        // if (controller.ActiveController !== controller.GroundController)
+        //     print("controller not ground - active controller:", controller.ActiveController);
     }
 
     private assertCharacter(errorOut?: boolean)
