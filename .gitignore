@@ -1,5 +1,5 @@
-node_modules
-out
-include
+/node_modules
+/out
+/include
+*.tsbuildinfo
 flamework.build
-yarn-error.log

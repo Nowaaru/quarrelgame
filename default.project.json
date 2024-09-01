@@ -38,7 +38,7 @@
               "$path": "node_modules/@flamework"
             },
             "@quarrelgame-framework": {
-                "$path": "node_modules/@quarrelgame-framework"
+              "$path": "node_modules/@quarrelgame-framework"
             }
           }
         },
