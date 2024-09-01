@@ -1,13 +1,17 @@
-import { Controller, Dependency, OnInit, OnRender } from "@flamework/core";
-import { CombatController2D, MatchController, OnArenaChange, OnRespawn } from "@quarrelgame-framework/client";
+import { Controller, OnRender, OnStart } from "@flamework/core";
+import { CombatController2D, KeyboardEvents, MatchController, MotionInputHandling, OnArenaChange, OnKeyboardInput, OnMatchRespawn, OnRespawn } from "@quarrelgame-framework/client";
 import { Input, MotionInput } from "@quarrelgame-framework/common"
-import { PlatformCameraController2D } from "client/controllers/platformcamera2d";
 import { QGCharacterController } from "./character";
+import { Input  as InputController } from "@quarrelgame-framework/client";
+
+import { PlatformCameraController2D } from "client/controllers/platformcamera2d";
+import { Client } from "./client";
 
 @Controller({})
-export class Combat extends CombatController2D<QGCharacterController> implements OnRespawn, OnInit {
-    constructor(protected readonly characterController: QGCharacterController, protected readonly matchController: MatchController) {
-        super(characterController, matchController);
+export class Combat extends CombatController2D implements OnStart, OnRender, KeyboardEvents, MotionInputHandling, OnMatchRespawn 
+{
+    constructor(protected readonly client: Client, protected readonly characterController: QGCharacterController, protected readonly matchController: MatchController, protected readonly inputController: InputController) {
+        super(client, characterController, matchController, inputController);
 
         this.keybindMap = new Map<Enum.KeyCode, Input>([
             [Enum.KeyCode.Zero, Input.Roman],
@@ -20,9 +24,6 @@ export class Combat extends CombatController2D<QGCharacterController> implements
             [Enum.KeyCode.RightShift, Input.Sweep],
             [Enum.KeyCode.LeftShift, Input.Dash]
         ]);
-    }
-
-    onInit(): void | Promise<void> {
     }
 
     onRespawn(character: Model): void {

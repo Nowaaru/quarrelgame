@@ -6,26 +6,22 @@ import {
     MatchController,
     OnArenaChange,
     OnMatchRespawn,
+    OnRespawn,
     OnMatchStart,
 } from "@quarrelgame-framework/client";
 
-import {
-    MotionInput,
-} from "@quarrelgame-framework/common";
-
-
 import { Players } from "@rbxts/services";
-import { Combat } from "client/controllers/combat";
 import { Humanoid2D } from "client/controllers/humanoid";
+import { Client } from "./client";
 
 print("MC:", MatchController)
 
 @Controller({})
-export class QGCharacterController extends CharacterController2D implements OnMatchRespawn, OnRender, OnArenaChange, OnStart, OnMatchStart
+export class QGCharacterController extends CharacterController2D implements OnRespawn, OnMatchRespawn, OnRender, OnArenaChange, OnStart, OnMatchStart
 {
-    constructor(protected humanoidController: Humanoid2D, protected matchController: MatchController, protected input: Input)
+    constructor(protected client: Client, protected humanoidController: Humanoid2D, protected matchController: MatchController, protected input: Input)
     {
-        super(humanoidController, matchController, input);
+        super(client, humanoidController, matchController, input);
     }
 
     async onMatchRespawn(character: Model): Promise<void>
@@ -45,7 +41,7 @@ export class QGCharacterController extends CharacterController2D implements OnMa
     {
         super.onRender();
         if (!this.character)
-            return print("no character");
+            return // print("no character");
 
         if (this._arena)
         {
