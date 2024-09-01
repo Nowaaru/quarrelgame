@@ -11,7 +11,6 @@ import {
 } from "@quarrelgame-framework/client";
 
 import { Players } from "@rbxts/services";
-import { Humanoid2D } from "client/controllers/humanoid";
 import { Client } from "./client";
 
 print("MC:", MatchController)
@@ -40,8 +39,10 @@ export class QGCharacterController extends CharacterController2D implements OnRe
     onRender()
     {
         super.onRender();
-        if (!this.character)
-            return // print("no character");
+        const currentEntity = this.GetEntity();
+
+        if (!currentEntity)
+            return;
 
         if (this._arena)
         {
@@ -59,13 +60,13 @@ export class QGCharacterController extends CharacterController2D implements OnRe
                 {
                     if (otherParticipant?.Character)
                     {
-                        this.humanoidController.Rotate(
-                            CFrame.lookAt(this.character.GetPivot().Position, otherParticipant.Character.GetPivot().Position).LookVector.mul(new Vector3(1, 0, 1)),
+                        currentEntity.Rotate(
+                            CFrame.lookAt(currentEntity.instance.GetPivot().Position, otherParticipant.Character.GetPivot().Position).LookVector.mul(new Vector3(1, 0, 1)),
                         );
                     }
                 }
                 else if (participantsAmount === 1)
-                    this.humanoidController.Rotate(CFrame.lookAt(this.character.GetPivot().Position, Origin.Value.Position).LookVector.mul(new Vector3(1, 0, 1)));
+                    currentEntity.Rotate(CFrame.lookAt(currentEntity.instance.GetPivot().Position, Origin.Value.Position).LookVector.mul(new Vector3(1, 0, 1)));
                 else
                 {
                     print(
