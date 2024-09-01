@@ -18,9 +18,9 @@ print("MC:", MatchController)
 @Controller({})
 export class QGCharacterController extends CharacterController2D implements OnRespawn, OnMatchRespawn, OnRender, OnArenaChange, OnStart, OnMatchStart
 {
-    constructor(protected client: Client, protected humanoidController: Humanoid2D, protected matchController: MatchController, protected input: Input)
+    constructor(protected client: Client,  protected matchController: MatchController, protected input: Input)
     {
-        super(client, humanoidController, matchController, input);
+        super(client, matchController, input);
     }
 
     async onMatchRespawn(character: Model): Promise<void>
