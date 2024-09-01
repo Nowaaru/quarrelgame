@@ -4,7 +4,7 @@ import { TestService } from "server/services/testservice";
 
 export = function(context: CommandContext, ...args: unknown[])
 {
-    const newMatch = Dependency<TestService>().tryMatchTest();
+    const newMatch = false;
     if (newMatch)
     {
         return "Test match started.";

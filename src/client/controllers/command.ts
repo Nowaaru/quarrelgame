@@ -1,5 +1,7 @@
-import { CommandController as QGFCommandController } from "@quarrelgame-framework/client";
+import { Controller } from "@flamework/core";
 
-export class CommandController extends QGFCommandController {
-
+@Controller({})
+export class CommandController {
+    SetKeys(...keys: Enum.KeyCode[])
+    {}
 }
