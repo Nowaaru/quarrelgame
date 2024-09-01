@@ -1,4 +1,3 @@
-
 import { GlobalFunctions, GlobalEvents } from "shared/network";
 import { QuarrelFunctions as QGFFunctions, QuarrelEvents as QGFEvents } from "@quarrelgame-framework/common";
 
