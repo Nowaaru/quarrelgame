@@ -1,8 +1,7 @@
 import { Flamework } from "@flamework/core";
-import "server/network";
 
-Flamework.addPaths("node_modules/@quarrelgame-framework/server/services");
-Flamework.addPaths("node_modules/@quarrelgame-framework/server/components");
+Flamework.addPaths("node_modules/@quarrelgame-framework/server");
+Flamework.addPaths("node_modules/@quarrelgame-framework/common");
 
 Flamework.addPaths("src/server/services");
 Flamework.addPaths("src/server/components");
