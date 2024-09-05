@@ -1,4 +1,4 @@
-import { Controller, Dependency, OnInit, OnStart } from "@flamework/core";
+import { Controller, OnInit } from "@flamework/core";
 import { Players, StarterGui } from "@rbxts/services";
 
 import {
@@ -6,17 +6,17 @@ import {
     CharacterSelectController,
     OnCharacterSelected,
 } from "@quarrelgame-framework/client";
-import Characters from "data/character";
-import { Animator, Character } from "@quarrelgame-framework/common";
+import {  Character, CharacterManager } from "@quarrelgame-framework/common";
 import { QuarrelFunctions } from "client/network";
 
 @Controller({})
 export class Client
     extends QGFClient
-    implements OnStart, OnInit, OnCharacterSelected 
+    implements OnInit, OnCharacterSelected 
 {
     constructor(
         protected characterSelectController: CharacterSelectController,
+        protected characterManager: CharacterManager,
     ) {
         super();
     }
@@ -24,26 +24,20 @@ export class Client
     onInit(): void 
     {
         super.onInit();
-        print("i'm gonna blow up and act like i don't know nbobody!!");
 
         Players.LocalPlayer.CameraMinZoomDistance = 8;
         Players.LocalPlayer.CameraMaxZoomDistance =
             Players.LocalPlayer.CameraMinZoomDistance;
 
         StarterGui.SetCoreGuiEnabled(Enum.CoreGuiType.All, false);
-
-        Animator.RegisterCharacters(Characters);
-    }
-
-    onStart() 
-    {
-        print("Example Client loaded.");
-        this.characterSelectController.SetCharacters(Characters);
     }
 
     onCharacterSelected(character: Character.Character): void 
     {
-        QuarrelFunctions.SelectCharacter(character.Name).then(async () =>
+        const characterId = this.characterManager.IdFromCharacter(character);
+        assert(characterId, `character id ${characterId} not found`);
+
+        QuarrelFunctions.SelectCharacter(characterId).then(async () =>
             QuarrelFunctions.Ready().then(() =>
                 QuarrelFunctions.MatchTest()
                     .then(() => {

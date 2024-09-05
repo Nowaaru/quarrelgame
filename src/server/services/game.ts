@@ -1,8 +1,6 @@
 import { Dependency, Modding, OnInit, OnStart, Reflect, Service } from "@flamework/core";
 import { TestService } from "./testservice";
 import { QuarrelGame } from "@quarrelgame-framework/server";
-import Characters from "data/character";
-
 
 /*
  * TODO: look into turning quarrelGame import into a decorator in quarrelgame-framework
@@ -17,6 +15,5 @@ export class Game implements OnStart
 
     onStart(): void {
         print("Quarrel Game Example started.");
-        this.quarrelGame.SetCharacters(Characters);
     }
 }

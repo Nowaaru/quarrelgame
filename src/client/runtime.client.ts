@@ -8,6 +8,7 @@ Flamework.addPaths("node_modules/@quarrelgame-framework/common");
 Flamework.addPaths("src/client/controllers");
 Flamework.addPaths("src/client/components");
 Flamework.addPaths("src/shared/components");
+Flamework.addPaths("src/data/character");
 
 
 Flamework.ignite();

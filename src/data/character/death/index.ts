@@ -1,44 +1,21 @@
-import { EntityState, Input, Hitbox, Character, Skill, Animation, Motion } from "@quarrelgame-framework/common";
-import { FarSlash, ForwardKick, LowHeavy } from "./normals";
+import { QGCharacter, EntityState, Input, Hitbox, Character, Skill, Animation, Motion, MotionInput } from "@quarrelgame-framework/common";
+import { FarSlash, ForwardKick, Heavy, LowHeavy } from "./normals";
 
-const Death = new Character.CharacterBuilder3D()
-    .SetName("DEATH")
-    .SetDescription("gotsuteki")
-    .SetSubheader("JUST KICK THE DOLPHIN")
-    .SetHeader("GOTSUTEKI")
-    .SetModel(Character.GetCharacterModel<CharacterModels>().death, Character.CharacterRigType.Raw)
-    .SetEasiness(5)
-    .SetAttack([Motion.Neutral, Input.Slash], FarSlash)
-    .SetAttack([Motion.Neutral, Input.Kick], ForwardKick)
-    .SetAttack([Motion.Down, Input.Heavy], LowHeavy)
-    .SetAnimation(
-        EntityState.Idle,
-        new Animation.AnimationBuilder()
-            .SetName("Idle")
-            .SetAnimationId("rbxassetid://14487999316")
-            .SetPriority(Enum.AnimationPriority.Idle)
-            .SetLooped(true)
-            .Construct(),
-    )
-    .SetAnimation(
-        EntityState.Walk,
-        new Animation.AnimationBuilder()
-            .SetName("Walk")
-            .SetAnimationId("rbxassetid://14488005454")
-            .SetPriority(Enum.AnimationPriority.Movement)
-            .SetLooped(true)
-            .Construct(),
-    )
-    .SetAnimation(
-        EntityState.Crouch,
-        new Animation.AnimationBuilder()
-            .SetName("Crouch")
-            .SetAnimationId("rbxassetid://14288051389")
-            .SetPriority(Enum.AnimationPriority.Movement)
-            .SetLooped(true)
-            .Construct(),
-    )
-    .AddSkill(
+@QGCharacter({
+    id: "the grim reaper"
+})
+export default class DEATH implements Character.Character
+{
+    Name: string = "DEATH";
+    Description: string = "gotsuteki";
+    Header = "GOTSUTEKI";
+    Subheader = "JUST KICK THE DOLPHIN";
+
+    EaseOfUse: 1 | 2 | 3 | 4 | 5 = 3;
+
+    Model = Character.GetCharacterModel<CharacterModels>().death;
+
+    Skills: ReadonlySet<Skill.Skill> = new ReadonlySet([
         new Skill.SkillBuilder()
             .SetName("Test Skill")
             .SetDescription("A test skill.")
@@ -66,7 +43,39 @@ const Death = new Character.CharacterBuilder3D()
             .SetGroundedType(Skill.SkillGroundedType.Ground)
             .SetReversal(false)
             .Construct(),
-    )
-    .Construct();
+    ]);
 
-export = Death;
+    Archetype: Character.Archetype = Character.Archetype.Beatdown;
+    Attacks: ReadonlyMap<MotionInput, Skill.Skill | (() => Skill.Skill)> = new ReadonlyMap([
+        [ [ Motion.Neutral, Input.Slash ], FarSlash    ],
+        [ [ Motion.Neutral, Input.Kick  ], ForwardKick ],
+        [ [ Motion.Neutral, Input.Heavy ], Heavy       ],
+        [ [ Motion.Down, Input.Heavy    ], LowHeavy    ]
+    ]);
+
+    RigType: Character.CharacterRigType = Character.CharacterRigType.Raw;
+    
+    Animations: Character.Animations = {
+        [ EntityState.Idle ]: 
+            new Animation.AnimationBuilder()
+                .SetName("Idle")
+                .SetAnimationId("rbxassetid://14487999316")
+                .SetPriority(Enum.AnimationPriority.Idle)
+                .SetLooped(true)
+                .Construct(),
+        [ EntityState.Crouch ]:
+            new Animation.AnimationBuilder()
+                .SetName("Crouch")
+                .SetAnimationId("rbxassetid://14288051389")
+                .SetPriority(Enum.AnimationPriority.Movement)
+                .SetLooped(true)
+                .Construct(),
+        [ EntityState.Walk ]:
+            new Animation.AnimationBuilder()
+                .SetName("Walk")
+                .SetAnimationId("rbxassetid://14488005454")
+                .SetPriority(Enum.AnimationPriority.Movement)
+                .SetLooped(true)
+                .Construct(),
+    };
+}

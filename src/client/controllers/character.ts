@@ -13,8 +13,6 @@ import {
 import { Players } from "@rbxts/services";
 import { Client } from "./client";
 
-print("MC:", MatchController)
-
 @Controller({})
 export class QGCharacterController extends CharacterController2D implements OnRespawn, OnMatchRespawn, OnRender, OnArenaChange, OnStart, OnMatchStart
 {
