@@ -23,8 +23,8 @@ export class QGCharacterController extends CharacterController2D implements OnRe
 
     async onMatchRespawn(character: Model): Promise<void>
     {
-        print("hmmmmmmmmmmm");
         super.onMatchRespawn(character);
+        this.enabled = true;
     }
 
     onMatchStart()
