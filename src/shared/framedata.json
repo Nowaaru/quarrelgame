@@ -1,0 +1,80 @@
+{
+  "Tension": {
+    "Level": [
+      {
+        "Block": 150,
+        "Hit": 300
+      },
+      {
+        "Block": 200,
+        "Hit": 400
+      },
+      {
+        "Block": 250,
+        "Hit": 500
+      },
+      {
+        "Block": 300,
+        "Hit": 600
+      },
+      {
+        "Block": 350,
+        "Hit": 700
+      }
+    ]
+  },
+  "Attack": {
+    "Level": [
+      {
+        "Hitstop": 11,
+        "HitstunStand": 12,
+
+        "HitstunCrouch": 13,
+        "GroundBlock": 9,
+
+        "AirBlock": 19,
+        "AirLanding": 5
+      },
+      {
+        "Hitstop": 12,
+        "HitstunStand": 14,
+
+        "HitstunCrouch": 15,
+        "GroundBlock": 11,
+
+        "AirBlock": 19,
+        "AirLanding": 5
+      },
+      {
+        "Hitstop": 13,
+        "HitstunStand": 16,
+
+        "HitstunCrouch": 17,
+        "GroundBlock": 13,
+
+        "AirBlock": 19,
+        "AirLanding": 5
+      },
+      {
+        "Hitstop": 14,
+        "HitstunStand": 19,
+
+        "HitstunCrouch": 20,
+        "GroundBlock": 16,
+
+        "AirBlock": 19,
+        "AirLanding": 5
+      },
+      {
+        "Hitstop": 15,
+        "HitstunStand": 21,
+
+        "HitstunCrouch": 22,
+        "GroundBlock": 18,
+
+        "AirBlock": 19,
+        "AirLanding": 5
+      }
+    ]
+  }
+}
