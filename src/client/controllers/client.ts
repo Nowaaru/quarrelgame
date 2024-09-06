@@ -12,7 +12,7 @@ import { QuarrelFunctions } from "client/network";
 @Controller({})
 export class Client
     extends QGFClient
-    implements OnInit, OnCharacterSelected 
+    implements OnInit, OnCharacterSelected
 {
     constructor(
         protected characterSelectController: CharacterSelectController,
