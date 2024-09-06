@@ -1,8 +1,18 @@
-import { QGCharacter, EntityState, Input, Hitbox, Character, Skill, Animation, Motion, MotionInput } from "@quarrelgame-framework/common";
-import { FarSlash, ForwardKick, Heavy, LowHeavy } from "./normals";
+import { QGCharacter, EntityState, Input, Hitbox, Character, Skill, Animation, Motion, MotionInput, Entity, SkillLike } from "@quarrelgame-framework/common";
+import { FarSlash, StandingKick, Heavy, LowHeavy, ForwardPunch } from "./normals";
+import TotsugekiFlyHS from "./skills/skill-dependencies/totsugeki-heavy-fly";
+import TotsugekiHS from "./skills/totsugeki-heavy";
 
 @QGCharacter({
-    id: "the grim reaper"
+    id: "the grim reaper",
+    skills: [
+        [ [ Motion.Down, Motion.DownForward, Motion.Forward, Input.Heavy ], TotsugekiHS],
+        [ [ Motion.Neutral, Input.Slash ], FarSlash     ],
+        [ [ Motion.Neutral, Input.Kick  ], StandingKick ],
+        [ [ Motion.Neutral, Input.Heavy ], Heavy        ],
+        [ [ Motion.Down,    Input.Heavy ], LowHeavy     ],
+        [ [ Motion.Forward, Input.Punch ], ForwardPunch ]
+    ]
 })
 export default class DEATH implements Character.Character
 {
@@ -14,45 +24,19 @@ export default class DEATH implements Character.Character
     EaseOfUse: 1 | 2 | 3 | 4 | 5 = 3;
 
     Model = Character.GetCharacterModel<CharacterModels>().death;
+    Setup = (incomingCharacter: Model) =>
+    {
+        // TODO: turn this into a decorator field please
+        // god this is so annoying
+        const dolphin = incomingCharacter.FindFirstChild("Dolphin") as BasePart;
+        if (dolphin)
 
-    Skills: ReadonlySet<Skill.Skill> = new ReadonlySet([
-        new Skill.SkillBuilder()
-            .SetName("Test Skill")
-            .SetDescription("A test skill.")
-            .SetFrameData(
-                new Skill.FrameDataBuilder()
-                    .SetAnimation(
-                        new Animation.AnimationBuilder()
-                            .SetName("Test Skill")
-                            .SetAnimationId("rbxassetid://14280676559")
-                            .SetPriority(Enum.AnimationPriority.Action)
-                            .Construct(),
-                    )
-                    .SetStartup(4)
-                    .SetActive(6)
-                    .SetRecovery(-4)
-                    .SetHitbox(
-                        new Hitbox.HitboxBuilder()
-                            .SetOffset()
-                            .SetSize(new Vector3(7, 7, 7))
-                            .Construct(),
-                    ),
-            )
-            .SetMotionInput([Motion.Down, Motion.DownForward, Motion.Forward, Input.Slash]) // 236S
-            .SetGaugeRequired(25)
-            .SetGroundedType(Skill.SkillGroundedType.Ground)
-            .SetReversal(false)
-            .Construct(),
-    ]);
+            dolphin.Transparency = 1;
 
+    };
+
+    Skills = new Map<MotionInput, SkillLike>();
     Archetype: Character.Archetype = Character.Archetype.Beatdown;
-    Attacks: ReadonlyMap<MotionInput, Skill.Skill | (() => Skill.Skill)> = new ReadonlyMap([
-        [ [ Motion.Neutral, Input.Slash ], FarSlash    ],
-        [ [ Motion.Neutral, Input.Kick  ], ForwardKick ],
-        [ [ Motion.Neutral, Input.Heavy ], Heavy       ],
-        [ [ Motion.Down, Input.Heavy    ], LowHeavy    ]
-    ]);
-
     RigType: Character.CharacterRigType = Character.CharacterRigType.Raw;
     
     Animations: Character.Animations = {
