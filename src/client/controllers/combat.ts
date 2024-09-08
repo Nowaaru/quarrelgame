@@ -1,12 +1,14 @@
 import { Controller, OnRender, OnStart } from "@flamework/core";
-import { CombatController2D, KeyboardEvents, MatchController, MotionInputHandling, OnArenaChange, OnKeyboardInput, OnMatchRespawn, OnRespawn } from "@quarrelgame-framework/client";
-import { Input, MotionInput } from "@quarrelgame-framework/common"
+import { CombatController2D, KeyboardEvents, MatchController, MotionInputHandling, OnMatchRespawn } from "@quarrelgame-framework/client";
+import { Input } from "@quarrelgame-framework/common"
 import { QGCharacterController } from "./character";
 import { Input  as InputController } from "@quarrelgame-framework/client";
-
-import { PlatformCameraController2D } from "client/controllers/platformcamera2d";
 import { Client } from "./client";
 
+/*
+ * TODO: automatically implement these 
+ * interfaces (less boilerplate = more awesome)
+ */
 @Controller({})
 export class Combat extends CombatController2D implements OnStart, OnRender, KeyboardEvents, MotionInputHandling, OnMatchRespawn 
 {
@@ -18,7 +20,7 @@ export class Combat extends CombatController2D implements OnStart, OnRender, Key
             [Enum.KeyCode.Backspace, Input.Burst],
             [Enum.KeyCode.LeftBracket, Input.Slash],
             [Enum.KeyCode.Semicolon, Input.Punch],
-            [Enum.KeyCode.BackSlash, Input.Kick],
+            [Enum.KeyCode.Return, Input.Kick],
             [Enum.KeyCode.RightBracket, Input.Heavy],
             [Enum.KeyCode.Quote, Input.Dust],
             [Enum.KeyCode.RightShift, Input.Sweep],
