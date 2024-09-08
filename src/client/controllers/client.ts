@@ -40,10 +40,6 @@ export class Client
         QuarrelFunctions.SelectCharacter(characterId).then(async () =>
             QuarrelFunctions.Ready().then(() =>
                 QuarrelFunctions.MatchTest()
-                    .then(() => {
-                        print("oh my goodness gracious lol");
-                        return;
-                    })
                     .finally(() => this.characterSelectController.CloseCharacterSelect()),
             ),
         );
