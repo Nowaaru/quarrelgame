@@ -1,13 +1,13 @@
 import { Animation, Skill, Hitbox } from "@quarrelgame-framework/common";
 import { ShowDolphin } from "../util/dolphin";
-import TotsugekiFlyHS from "./skill-dependencies/totsugeki-heavy-fly";
+import TotsugekiFlyS from "./skill-dependencies/totsugeki-light-fly";
 
-export const TotsugekiHS = new Skill.SkillBuilder()
-    .SetName("Totsugeki - Heavy (Start)")
+export const TotsugekiS = new Skill.SkillBuilder()
+    .SetName("Totsugeki - Light (Start)")
     .SetGroundedType(Skill.SkillGroundedType.Ground)
     .SetFrameData(
         new Skill.FrameDataBuilder()
-            .SetStartup(18)
+            .SetStartup(7)
             .SetActive(0)
             .SetRecovery(0)
             .SetContact(0)
@@ -25,12 +25,12 @@ export const TotsugekiHS = new Skill.SkillBuilder()
             .SetAnimation(
                 new Animation.AnimationBuilder()
                     .IsAttack()
-                    .SetName("236HS")
+                    .SetName("236S")
                     .SetAnimationId("rbxassetid://138927552266940")
                     .Construct(),
             ),
     )
-    .SetLink(TotsugekiFlyHS)
+    .SetLink(TotsugekiFlyS)
     .Construct();
 
-export default TotsugekiHS;
+export default TotsugekiS;

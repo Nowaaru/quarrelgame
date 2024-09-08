@@ -1,4 +1,3 @@
-
 // heavy 138927552266940
 // slash 116729189239923
 // fly 135030929304561
@@ -8,8 +7,8 @@ import { HideDolphin, ShowDolphin } from "../../util/dolphin";
 import TotsugekiSplit from "../totsugeki-split";
 import { TotsugekiCancel } from "../totsugeki-cancel";
 
-export const TotsugekiHeavyFly = new Skill.SkillBuilder()
-    .SetName("Totsugeki - Heavy (Fly)")
+export const TotsugekiLightFly = new Skill.SkillBuilder()
+    .SetName("Totsugeki - Light (Fly)")
     .SetGroundedType(Skill.SkillGroundedType.Ground)
     .RekkasInto([Motion.Down, Motion.DownBack, Motion.Back, Input.Kick], TotsugekiSplit)
     .RekkasInto([Motion.Down, Motion.DownBack, Motion.Back, Input.Punch], TotsugekiCancel)
@@ -18,7 +17,7 @@ export const TotsugekiHeavyFly = new Skill.SkillBuilder()
             .SetStartup(0)
             .SetActive(18)
             .SetRecovery(20)
-            .SetContact(-4) // lol heavy fly encourages commitment
+            .SetContact(2) // lol light fly encourages dismount
             .SetBlockAdvantage(-3)
             .SetHitbox(
                 new Hitbox.HitboxBuilder()
@@ -26,20 +25,20 @@ export const TotsugekiHeavyFly = new Skill.SkillBuilder()
                     .SetSize(new Vector3(0, 0, 0))
                     .Construct(),
             )
-            .SetEffectAtFrame(0, (entity, skill) =>
+            .SetEffectAtFrame(0, (entity) =>
             {
                 const { FacingDirection, RootPart } = entity.ControllerManager;
                 if (!RootPart)
 
                     return;
 
-                RootPart.AssemblyLinearVelocity = RootPart.AssemblyLinearVelocity.add(FacingDirection.Unit.mul(RootPart.AssemblyMass * 0.675));
+                RootPart.AssemblyLinearVelocity = RootPart.AssemblyLinearVelocity.add(FacingDirection.Unit.mul(RootPart.AssemblyMass * 0.8));
             })
-            .SetEffectAtFrame(24, (entity, skill) =>
+            .SetEffectAtFrame(24, (entity) =>
             {
                 HideDolphin(entity)
                 const { RootPart } = entity.ControllerManager;
-                if (!RootPart) 
+                if (!RootPart)
 
                     return;
 
@@ -56,4 +55,4 @@ export const TotsugekiHeavyFly = new Skill.SkillBuilder()
     )
     .Construct();
 
-export default TotsugekiHeavyFly;
+export default TotsugekiLightFly;

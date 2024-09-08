@@ -1,9 +1,9 @@
 
-import {  Skill, Hitbox } from "@quarrelgame-framework/common";
+import { Skill, Hitbox } from "@quarrelgame-framework/common";
 import { HideDolphin } from "../util/dolphin";
 
-export const TotsugekiSplit = new Skill.SkillBuilder()
-    .SetName("Totsugeki - Split")
+export const TotsugekiCancel = new Skill.SkillBuilder()
+    .SetName("Totsugeki - Cancel")
     .SetGroundedType(Skill.SkillGroundedType.Ground)
     .SetFrameData(
         new Skill.FrameDataBuilder()
@@ -26,9 +26,9 @@ export const TotsugekiSplit = new Skill.SkillBuilder()
 
                     return;
 
-                RootPart.AssemblyLinearVelocity = entity.ControllerManager.FacingDirection.mul(-3).add(new Vector3(0, RootPart.AssemblyMass / 2.5, 0))//
+                RootPart.AssemblyLinearVelocity = entity.ControllerManager.FacingDirection.mul(-3);
             })
     )
     .Construct();
 
-export default TotsugekiSplit;
+export default TotsugekiCancel;

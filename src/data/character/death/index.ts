@@ -1,18 +1,28 @@
 import { QGCharacter, EntityState, Input, Hitbox, Character, Skill, Animation, Motion, MotionInput, Entity, SkillLike } from "@quarrelgame-framework/common";
 import { FarSlash, StandingKick, Heavy, LowHeavy, ForwardPunch } from "./normals";
-import TotsugekiFlyHS from "./skills/skill-dependencies/totsugeki-heavy-fly";
 import TotsugekiHS from "./skills/totsugeki-heavy";
+import TotsugekiS from "./skills/totsugeki-light";
+import AnchorSlide from "./skills/anchor-slide";
 
 @QGCharacter({
     id: "the grim reaper",
     skills: [
         [ [ Motion.Down, Motion.DownForward, Motion.Forward, Input.Heavy ], TotsugekiHS],
+        [ [ Motion.Down, Motion.DownForward, Motion.Forward, Input.Slash ], TotsugekiS],
+        [ [ Motion.Down, Motion.Down, Input.Kick ], AnchorSlide],
         [ [ Motion.Neutral, Input.Slash ], FarSlash     ],
         [ [ Motion.Neutral, Input.Kick  ], StandingKick ],
         [ [ Motion.Neutral, Input.Heavy ], Heavy        ],
         [ [ Motion.Down,    Input.Heavy ], LowHeavy     ],
         [ [ Motion.Forward, Input.Punch ], ForwardPunch ]
-    ]
+    ],
+    setup: (death_itself) =>
+    {
+        const dolphin = death_itself.FindFirstChild("Dolphin") as BasePart;
+        if (dolphin)
+
+            dolphin.Transparency = 1;
+    }
 })
 export default class DEATH implements Character.Character
 {
@@ -24,16 +34,6 @@ export default class DEATH implements Character.Character
     EaseOfUse: 1 | 2 | 3 | 4 | 5 = 3;
 
     Model = Character.GetCharacterModel<CharacterModels>().death;
-    Setup = (incomingCharacter: Model) =>
-    {
-        // TODO: turn this into a decorator field please
-        // god this is so annoying
-        const dolphin = incomingCharacter.FindFirstChild("Dolphin") as BasePart;
-        if (dolphin)
-
-            dolphin.Transparency = 1;
-
-    };
 
     Skills = new Map<MotionInput, SkillLike>();
     Archetype: Character.Archetype = Character.Archetype.Beatdown;
@@ -48,11 +48,19 @@ export default class DEATH implements Character.Character
                 .SetLooped(true)
                 .Construct(),
         [ EntityState.Crouch ]:
-            new Animation.AnimationBuilder()
+            new Animation.AnimationBuilder() 
                 .SetName("Crouch")
-                .SetAnimationId("rbxassetid://14288051389")
+                .SetAnimationId("rbxassetid://101279523463524")
+                .LinksInto(
+                    new Animation.AnimationBuilder()
+                        .SetName("CrouchHold")
+                        .SetAnimationId("rbxassetid://103639389253526")
+                        .SetPriority(Enum.AnimationPriority.Movement)
+                        .SetLooped(true)
+                        .Construct()
+                )
                 .SetPriority(Enum.AnimationPriority.Movement)
-                .SetLooped(true)
+                .SetLooped(false)
                 .Construct(),
         [ EntityState.Walk ]:
             new Animation.AnimationBuilder()
@@ -60,6 +68,28 @@ export default class DEATH implements Character.Character
                 .SetAnimationId("rbxassetid://14488005454")
                 .SetPriority(Enum.AnimationPriority.Movement)
                 .SetLooped(true)
+                .Construct(),
+        [ EntityState.Jumping ]:
+            new Animation.AnimationBuilder()
+                .SetName("JumpStart")
+                .SetAnimationId("rbxassetid://84998583229461")
+                .SetPriority(Enum.AnimationPriority.Movement)
+                .SetLooped(false)
+                .Construct(),
+        [ EntityState.Midair ]:
+            new Animation.AnimationBuilder()
+                .SetName("JumpMidair")
+                .SetAnimationId("rbxassetid://77360677996004")
+                .SetPriority(Enum.AnimationPriority.Movement)
+                .SetLooped(false)
+                    .LinksInto(
+                        new Animation.AnimationBuilder()
+                            .SetName("JumpMidairIdle")
+                            .SetAnimationId("rbxassetid://122284459150216")
+                            .SetPriority(Enum.AnimationPriority.Movement)
+                            .SetLooped(true)
+                            .Construct()
+                    )
                 .Construct(),
     };
 }

@@ -1,12 +1,5 @@
 import { Animation, QGSkill, Skill, Hitbox, MotionInput, SkillLike } from "@quarrelgame-framework/common";
 
-// export const LowHeavy = new Skill.SkillBuilder()
-//     .SetName("Low Heavy Slash")
-//     .SetGroundedType(Skill.SkillGroundedType.Ground)
-//     .SetFrameData(
-//     )
-//     .Construct();
-
 @QGSkill({
     id: "tgr2H"
 })
