@@ -1,4 +1,5 @@
-import Roact from "@rbxts/roact";
+import { BindingOrValue, getBindingValue, toBinding } from "@rbxts/pretty-react-hooks";
+import React, { useCallback } from "@rbxts/react";
 
 export interface CursorProps {
     ButtonDisplay?: {
@@ -7,8 +8,8 @@ export interface CursorProps {
     };
 
     BackgroundColor?: Color3;
-    Size?: UDim2;
-    Position?: UDim2;
+    Size?: number,
+    Position?: BindingOrValue<UDim2>;
 
     key?: string;
 }
@@ -16,20 +17,25 @@ export interface CursorProps {
 export function Cursor({
     ButtonDisplay,
     BackgroundColor = Color3.fromRGB(171, 68, 68),
-    Size = UDim2.fromOffset(32,32),
+    Size = 16,
     Position = UDim2.fromScale(),
-    key = tostring({}),
+    key,
 }: CursorProps) 
 {
     const basePadding = new UDim(0, 2);
     const secondaryPadding = new UDim(0, 1);
+    const calculateSizeAdjustment = useCallback((position) => (-math.sign(position) * (Size)), []);
+    Position = getBindingValue(Position)
+    print(Position)
 
     return (
         <canvasgroup
-            Size={Size}
-            Position={Position.add(UDim2.fromScale(0.5, 0.5))}
+            Size={UDim2.fromOffset(Size,Size)}
+            Position={Position.add(UDim2.fromScale(0.5, 0.5)).add(UDim2.fromOffset(calculateSizeAdjustment(Position.X.Scale), calculateSizeAdjustment(Position.Y.Scale)))}
+            BackgroundColor3={BackgroundColor}
             SizeConstraint={Enum.SizeConstraint.RelativeXX}
             AnchorPoint={new Vector2(0.5, 0.5)}
+            ZIndex={2}
             key={key}
         >
             <uicorner CornerRadius={new UDim(1, 0)} />
@@ -39,28 +45,27 @@ export function Cursor({
                 PaddingRight={basePadding}
                 PaddingTop={basePadding}
             />
-            <canvasgroup key="ButtonFill">
-                <uipadding
-                    PaddingBottom={secondaryPadding}
-                    PaddingLeft={secondaryPadding}
-                    PaddingRight={secondaryPadding}
-                    PaddingTop={secondaryPadding}
-                />
-                {ButtonDisplay ? (
-                    <textlabel
-                        Position={new UDim2()}
-                        Size={UDim2.fromScale(1, 1)}
-                        Rotation={0}
-                        BackgroundColor3={BackgroundColor}
-                        FontFace={Font.fromEnum(Enum.Font.FredokaOne)}
-                        TextColor3={new Color3(1, 1, 1)}
-                        key="PressedButton"
-                    >
-                        <uicorner CornerRadius={new UDim(1, 0)} />
-                        <uistroke Thickness={2} />
-                    </textlabel>
-                ) : undefined}
-            </canvasgroup>
+            <uipadding
+                PaddingBottom={secondaryPadding}
+                PaddingLeft={secondaryPadding}
+                PaddingRight={secondaryPadding}
+                PaddingTop={secondaryPadding}
+            />
+            <textlabel
+                Position={UDim2.fromScale(0.5, 0.5)}
+                Size={UDim2.fromScale(1, 1)}
+                Rotation={0}
+                BackgroundColor3={ButtonDisplay?.Color ?? BackgroundColor}
+                Text={ButtonDisplay?.Label ?? ""}
+                FontFace={Font.fromEnum(Enum.Font.FredokaOne)}
+                TextSize={16}
+                TextColor3={new Color3(1, 1, 1)}
+                AnchorPoint={new Vector2(0.5,0.5)}
+                key="PressedButton"
+            >
+                <uicorner CornerRadius={new UDim(1, 0)} />
+                <uistroke Thickness={2} />
+            </textlabel>
         </canvasgroup>
     );
 }
