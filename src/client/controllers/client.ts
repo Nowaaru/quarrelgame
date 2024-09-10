@@ -1,22 +1,20 @@
-import { Controller, OnInit } from "@flamework/core";
+import { Controller, OnInit, OnStart } from "@flamework/core";
 import { Players, StarterGui } from "@rbxts/services";
 
-import {
-    Client as QGFClient,
-    CharacterSelectController,
-    OnCharacterSelected,
-} from "@quarrelgame-framework/client";
+import { Client as QGFClient } from "@quarrelgame-framework/client";
 import {  Character, CharacterManager } from "@quarrelgame-framework/common";
 import { QuarrelFunctions } from "client/network";
+
+import { CharacterSelectController, OnCharacterSelected } from "client/controllers/characterselect";
 
 @Controller({})
 export class Client
     extends QGFClient
-    implements OnInit, OnCharacterSelected
+    implements OnInit, OnCharacterSelected, OnStart
 {
     constructor(
-        protected characterSelectController: CharacterSelectController,
-        protected characterManager: CharacterManager,
+        public characterSelectController: CharacterSelectController,
+        public characterManager: CharacterManager,
     ) {
         super();
     }
@@ -30,6 +28,10 @@ export class Client
             Players.LocalPlayer.CameraMinZoomDistance;
 
         StarterGui.SetCoreGuiEnabled(Enum.CoreGuiType.All, false);
+    }
+
+    onStart()
+    {
     }
 
     onCharacterSelected(character: Character.Character): void 

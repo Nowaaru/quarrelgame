@@ -1,7 +1,4 @@
-import Make from "@rbxts/make";
-import Roact from "@rbxts/roact";
-
-import { useEffect, useRef, useState } from "@rbxts/roact";
+import React, { useEffect, useRef, useState } from "@rbxts/react";
 import { RunService } from "@rbxts/services";
 import { Character } from "@quarrelgame-framework/common";
 import CharacterPortrait3D from "./characterportrait";

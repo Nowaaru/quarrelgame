@@ -1,11 +1,13 @@
-import Roact, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "@rbxts/roact";
+import React, { PropsWithChildren, useEffect, useLayoutEffect, useMemo, useRef, useState } from "@rbxts/react";
 
 import { Components } from "@flamework/components";
 import { Dependency } from "@flamework/core";
 import Make from "@rbxts/make";
 import { Character, Animation, Animator, EntityState } from "@quarrelgame-framework/common";
+import { ICharacter } from "@quarrelgame-framework/types";
+import { ComponentProps } from "@rbxts/react";
 
-export interface CharacterDisplayProps
+export interface CharacterDisplayProps extends PropsWithChildren
 {
     Character: Character.Character;
     Facing?: Enum.NormalId;
@@ -19,11 +21,10 @@ export interface CharacterDisplayProps
 export interface CharacterPortraitProps3D extends CharacterDisplayProps
 {
     OnClick?: (selectedCharacter: CharacterPortraitProps3D["Character"]) => void;
-    [Roact.Children]?: JSX.Element[];
 }
 
 const { Animation: AnimationClass } = Animation;
-export default function CharacterPortrait3D({
+export const CharacterPortrait3D = ({
     Character,
     Facing = Enum.NormalId.Front,
     CameraFocus = Character.Model.PrimaryPart,
@@ -32,8 +33,8 @@ export default function CharacterPortrait3D({
     OnClick,
 
     Animation,
-    [Roact.Children]: children,
-}: CharacterPortraitProps3D)
+    children,
+}: CharacterPortraitProps3D) =>
 {
     const viewportFrame = useRef<ViewportFrame>();
     const [viewportCamera, setViewportCamera] = useState<Camera | undefined>();
@@ -201,3 +202,5 @@ export default function CharacterPortrait3D({
         </textbutton>
     );
 }
+
+export default CharacterPortrait3D

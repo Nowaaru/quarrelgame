@@ -1,10 +1,10 @@
-import Roact, { useState } from "@rbxts/roact";
-import CharactersList from "data/character";
+import React, { useState } from "@rbxts/react";
 import { Character, EntityState } from "@quarrelgame-framework/common";
 
+import CharacterPortrait3D from "./characterportrait";
+import CharactersList from "data/character";
 import CharacterData from "./characterdata";
 import CharacterItem from "./characteritem";
-import CharacterPortrait3D from "./characterportrait";
 
 export interface CharacterSelectProps {
     Characters: ReadonlyMap<string, Character.Character>;
@@ -142,7 +142,7 @@ export default function CharacterSelect(characterSelectProps: CharacterSelectPro
                             PaddingTop={new UDim(0, 8)}
                         />
                         {(() => {
-                            const allCharacters: Roact.Element[] = [];
+                            const allCharacters: React.Element[] = [];
                             for (const [, character] of Characters) {
                                 allCharacters.push(
                                     <CharacterItem

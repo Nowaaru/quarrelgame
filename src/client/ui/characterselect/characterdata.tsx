@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-array-constructor */
-import Roact from "@rbxts/roact";
+import React from "@rbxts/react";
 import { Character } from "@quarrelgame-framework/common";
 
 export enum CharacterDataAlignment
@@ -95,7 +95,7 @@ function CharacterData({
                             BackgroundColor3={new Color3(1, 1, 1)}
                             BackgroundTransparency={1}
                         >
-                            {(new Array(Character.MaximumEaseOfUse, -1)).map<Roact.Element>((_, i) => (
+                            {(new Array(Character.MaximumEaseOfUse, -1)).map<React.Element>((_, i) => (
                                 <imagelabel
                                     BackgroundTransparency={1}
                                     ImageColor3={i < ChosenCharacter.EaseOfUse ? new Color3(0.85, 0.85, 0.4) : new Color3()}
