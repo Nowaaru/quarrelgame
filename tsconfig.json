@@ -4,8 +4,6 @@
     "allowSyntheticDefaultImports": true,
     "downlevelIteration": true,
     "jsx": "react",
-    "jsxFactory": "Roact.createElement",
-    "jsxFragmentFactory": "Roact.createFragment",
     "module": "commonjs",
     "moduleResolution": "Node",
     "noLib": true,
@@ -14,8 +12,17 @@
     "moduleDetection": "force",
     "strict": true,
     "target": "ESNext",
-    "typeRoots": ["node_modules/@rbxts", "node_modules/@flamework", "node_modules/@quarrelgame-framework"],
+    "typeRoots": [
+      "node_modules/@rbxts",
+      "node_modules/@flamework",
+      "node_modules/@quarrelgame-framework"
+    ],
 
+    "paths": {
+        "ui/*": ["client/util/*"],
+        "util/*": ["shared/util/*"]
+    },
+    
     // configurable
     "rootDir": "src",
     "outDir": "out",
@@ -29,6 +36,9 @@
         "transform": "rbxts-transformer-flamework",
         "obfuscation": false
       }
-    ]
+    ],
+
+    "jsxFactory": "React.createElement",
+    "jsxFragmentFactory": "React.Fragment"
   }
 }

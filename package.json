@@ -5,12 +5,11 @@
   "scripts": {
     "build": "rbxtsc",
     "watch": "rbxtsc -w",
-    "deploy": "rm -rf ./node_modules/@quarrelgame-framework/ flamework.build ./out/; npm install --install-links; yarn rbxtsc; rojo serve"
+    "deploy": "fish ../build.fish"
   },
   "devDependencies": {
     "@quarrelgame-framework/types": "file:../types",
     "@rbxts/compiler-types": "^2.3.0-types.1",
-    "@rbxts/flipper": "^2.0.1",
     "@rbxts/raycast-hitbox": "^4.0.1-ts.0",
     "@rbxts/types": "^1.0.794",
     "@typescript-eslint/eslint-plugin": "^8.4.0",
@@ -18,8 +17,8 @@
     "prettier": "^2.3.2",
     "rbxmx-to-ts": "^2.0.1",
     "rbxts-transformer-flamework": "^1.2.3",
-    "roblox-ts": "^2.3.0",
-    "typescript": "5.2.2"
+    "roblox-ts": "^2.3.0-dev-8c47a5e",
+    "typescript": "^5.2.2"
   },
   "dependencies": {
     "@flamework/components": "^1.2.3",
@@ -34,10 +33,10 @@
     "@rbxts/luau-thread": "^1.0.1",
     "@rbxts/make": "^1.0.6",
     "@rbxts/object-utils": "^1.0.4",
-    "@rbxts/pretty-react-hooks": "^0.2.1",
+    "@rbxts/pretty-react-hooks": "^0.6.0",
     "@rbxts/promise-character": "^1.0.3",
-    "@rbxts/react-roblox": "^0.1.2",
-    "@rbxts/roact": "npm:@rbxts/react-ts",
+    "@rbxts/react": "^0.4.0",
+    "@rbxts/react-roblox": "^0.4.0",
     "@rbxts/rust-classes": "^0.12.0",
     "@rbxts/services": "^1.5.1",
     "@rbxts/signal": "^1.1.1",
