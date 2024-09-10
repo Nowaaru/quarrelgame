@@ -38,7 +38,18 @@ export class QGCharacterController extends CharacterController2D implements OnRe
     {
         super.onRender();
         const currentEntity = this.GetEntity();
+        if (currentEntity)
+        {
+            if (currentEntity.IsNegative())
 
+                return;
+
+            this.EntityFacingLogic(currentEntity);
+        }
+    }
+
+    public EntityFacingLogic(currentEntity = this.GetEntity())
+    {
         if (!currentEntity)
             return;
 
@@ -54,17 +65,30 @@ export class QGCharacterController extends CharacterController2D implements OnRe
                 const participantsAmount = allParticipants.size();
                 const otherParticipant = allParticipants.find((n) => n !== this.player);
 
+                const currentEntityPosition = currentEntity.instance.GetPivot().Position;
+
                 if (participantsAmount === 2)
                 {
                     if (otherParticipant?.Character)
                     {
                         currentEntity.Rotate(
-                            CFrame.lookAt(currentEntity.instance.GetPivot().Position, otherParticipant.Character.GetPivot().Position).LookVector.mul(new Vector3(1, 0, 1)),
+                            CFrame.lookAt(currentEntityPosition, otherParticipant.Character.GetPivot().Position).LookVector.mul(new Vector3(1, 0, 1)),
                         );
                     }
                 }
                 else if (participantsAmount === 1)
-                    currentEntity.Rotate(CFrame.lookAt(currentEntity.instance.GetPivot().Position, Origin.Value.Position).LookVector.mul(new Vector3(1, 0, 1)));
+                {
+                    const originPosition = Origin.Value.Position;
+                    const leveledEntityPosition = currentEntityPosition.mul(new Vector3(1,0,1)).add(Origin.Value.Position.mul(new Vector3(0,1)));
+                    const directionToOrigin = (originPosition.sub(leveledEntityPosition)).Unit;
+                    if (directionToOrigin.Dot(Axis.Value) < 0)
+
+                        currentEntity.Rotate(Axis.Value.mul(-1))
+
+                    else 
+
+                        currentEntity.Rotate(Axis.Value);
+                }
                 else
                 {
                     print(
