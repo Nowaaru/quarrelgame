@@ -44,6 +44,15 @@ export const AnchorSlide = new Skill.SkillBuilder()
 
                 RootPart.AssemblyLinearVelocity = entity.ControllerManager.FacingDirection.mul(RootPart.AssemblyMass * 0.4)
             })
+            .SetEffectAtFrame(25, (entity) =>
+            {
+                const { RootPart } = entity.ControllerManager;
+                if (!RootPart)
+
+                    return;
+
+                RootPart.AssemblyLinearVelocity = Vector3.zero;
+            })
     )
     .Construct();
 
