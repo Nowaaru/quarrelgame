@@ -1,4 +1,4 @@
-import { Controller, OnStart } from "@flamework/core";
+import { Controller, OnRender, OnStart } from "@flamework/core";
 import { MotionInputHandling, OnMatchRespawn, Input as InputHandler} from "@quarrelgame-framework/client";
 import { ConvertMoveDirectionToMotion, EntityState, Input, Motion, MotionInput } from "@quarrelgame-framework/common";
 import { Managed, ICharacter } from "@quarrelgame-framework/types";
@@ -19,11 +19,13 @@ const FrameDataColors =
     [EntityState.Startup, Color3.fromRGB(0,0,255)],
     [EntityState.Attack, Color3.fromRGB(255,0,0)],
     [EntityState.Recovery, Color3.fromRGB(0,255,0)],
+    [EntityState.Landing, Color3.fromRGB(120,120,255)],
+    [EntityState.Jumping, Color3.fromRGB(120,120,255)],
 
 ] as const;
 
 @Controller({})
-export class TrainingController implements /* KeyboardEvents, */ OnMatchRespawn, MotionInputHandling, OnStart
+export class TrainingController implements /* KeyboardEvents, */ OnMatchRespawn, MotionInputHandling, OnStart 
 {
     protected trainingIsEnabled = false;
     private trainingFrameDataHighlight = new Instance("Highlight")
@@ -87,6 +89,7 @@ export class TrainingController implements /* KeyboardEvents, */ OnMatchRespawn,
 
     public StartTrainingMode()
     {
+        this.trainingIsEnabled = true;
         this.trainingFrameDataHighlight.Enabled = true;
 
         this.RefreshTrainingUI()
@@ -94,6 +97,7 @@ export class TrainingController implements /* KeyboardEvents, */ OnMatchRespawn,
 
     public EndTrainingMode()
     {
+        this.trainingIsEnabled = false;
         this.trainingFrameDataHighlight.Enabled = false;
         this.lastStateChangedConnection?.Disconnect();
         this.lastStateChangedConnection = undefined;
@@ -103,6 +107,9 @@ export class TrainingController implements /* KeyboardEvents, */ OnMatchRespawn,
 
     onRender()
     {
+        if (this.trainingIsEnabled)
+
+            this.RefreshTrainingUI()
     }
 
     private lastStateChangedConnection?: RBXScriptConnection
