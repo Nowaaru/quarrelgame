@@ -3,6 +3,8 @@ import { FarSlash, StandingKick, Heavy, LowHeavy, ForwardPunch } from "./normals
 import TotsugekiHS from "./skills/totsugeki-heavy";
 import TotsugekiS from "./skills/totsugeki-light";
 import AnchorSlide from "./skills/anchor-slide";
+import { JumpingKick } from "./normals/J.K";
+import { JumpingHeavySlash } from "./normals/J.HS";
 
 @QGCharacter({
     id: "the grim reaper",
@@ -10,11 +12,13 @@ import AnchorSlide from "./skills/anchor-slide";
         [ [ Motion.Down, Motion.DownForward, Motion.Forward, Input.Heavy ], TotsugekiHS],
         [ [ Motion.Down, Motion.DownForward, Motion.Forward, Input.Slash ], TotsugekiS],
         [ [ Motion.Down, Motion.Down, Input.Kick ], AnchorSlide],
-        [ [ Motion.Neutral, Input.Slash ], FarSlash     ],
-        [ [ Motion.Neutral, Input.Kick  ], StandingKick ],
-        [ [ Motion.Neutral, Input.Heavy ], Heavy        ],
-        [ [ Motion.Down,    Input.Heavy ], LowHeavy     ],
-        [ [ Motion.Forward, Input.Punch ], ForwardPunch ]
+        [ [ Motion.Neutral, Input.Slash ], FarSlash          ],
+        [ [ Motion.Neutral, Input.Kick  ], StandingKick      ],
+        [ [ Motion.Neutral, Input.Heavy ], Heavy             ],
+        [ [ Motion.Neutral, Input.Heavy ], JumpingHeavySlash ],
+        [ [ Motion.Neutral, Input.Kick  ], JumpingKick       ], // Air Only
+        [ [ Motion.Down,    Input.Heavy ], LowHeavy          ],
+        [ [ Motion.Forward, Input.Punch ], ForwardPunch      ]
     ],
     setup: (death_itself) =>
     {
@@ -91,5 +95,13 @@ export default class DEATH implements Character.Character
                             .Construct()
                     )
                 .Construct(),
+        [EntityState.Landing]:
+            new Animation.AnimationBuilder()
+                .SetName("Land")
+                .SetAnimationId("rbxassetid://81632743307571")
+                .SetPriority(Enum.AnimationPriority.Action)
+                .SetLooped(false)
+                .Construct(),
+
     };
 }
