@@ -1,18 +1,8 @@
 import React, { Children, useEffect, useMemo, useRef, useState } from "@rbxts/react";
 import Cursor, { CursorProps } from "./cursor";
 import Dots from "./dots";
-import { Dependency } from "@flamework/core";
-import { Combat } from "client/controllers/combat";
-import { BindingOrValue, isBinding, toBinding, useMotion, useSpring } from "@rbxts/pretty-react-hooks";
+import { BindingOrValue, toBinding, useMotion } from "@rbxts/pretty-react-hooks";
 import { Motion as MotionEnum, Input as InputEnum, ConvertMotionToMoveDirection } from "@quarrelgame-framework/common";
-import { getBindingValue } from "@rbxts/pretty-react-hooks";
-
-/* TODO: */
-// Use Pretty-Roact-Hooks to get motors
-// which we can use for interpolating.
-//   
-// After that, switch to React and use 
-// Pretty-React-Hooks.
 
 interface Joy extends React.PropsWithChildren {
     CursorProperties?: Omit<CursorProps, "Position">,
@@ -27,10 +17,20 @@ interface Joy extends React.PropsWithChildren {
 
     key?: string
 }
+
+const GGButtons = {
+    [InputEnum.Punch]: Color3.fromHex("#FE8CFE"),
+    [InputEnum.Kick]: Color3.fromHex ("#66CEFF"),
+    [InputEnum.Slash]: Color3.fromHex("#36ECA0"),
+    [InputEnum.Heavy]: Color3.fromHex("#FD3030"),
+    [InputEnum.Dust]: Color3.fromHex ("#FF9B30")
+}
+
+const defaultCursorSize = 20;
 export function Joy(Props: Joy)
 {
     const {
-        CursorProperties,
+        CursorProperties = { Size: defaultCursorSize },
         Size = UDim2.fromScale(0.292, 0.874), 
         CornerRadius = new UDim(0, 4),
 
@@ -39,47 +39,45 @@ export function Joy(Props: Joy)
         DotSize = 8, 
         children,
     } = Props;
-
-    const motionAsBinding = toBinding(Motion);
     const dotsGuiObjectRef = useRef<Frame>();
-    const motionDirection = useMemo(() =>
+
+    /* motion direction for the cursor, adjusted to the dots. */
+    const [cursorPosition, setCursorPosition] = useState(UDim2.fromScale(0.5, 0.5));
+    const [interpolatedCursorPositionBinding, motionState] = useMotion({x: 0.5, y: 0.5})
+    useEffect(() =>
     {
-        const dir = ConvertMotionToMoveDirection(getBindingValue(motionAsBinding.getValue()));
-        const v2Direction = new Vector2(dir.X, -dir.Y)
-
-        return v2Direction
-    }, [motionAsBinding.getValue(), Input]);
-
-    /* motion direction for the cursor, clamped to the dots. */
-    const [motionPositionBinding, motion] = useMotion(new UDim2())
-
-    const cursorPosition = useMemo(() => {
-        const rawDirection = UDim2.fromScale(motionDirection.X, motionDirection.Y)
-        if (!dotsGuiObjectRef.current)
-
-            return rawDirection;
-
-        const { AbsolutePosition: CanvasPosition, AbsoluteSize: CanvasSize } = dotsGuiObjectRef.current;
-        const PointInJoyBox = CanvasPosition.add(CanvasSize.mul(motionDirection));
-
-        print(rawDirection, PointInJoyBox)
-        const [shortestDotDistance, closestDotToPosition] = (dotsGuiObjectRef.current!.GetChildren()
-            .filter((e) => e.IsA("GuiObject")) as GuiObject[])
-            .filter((e) => !!e.Name.find("Dot(%d)"))
-            .reduce<readonly [number, GuiObject | undefined]>(([shortestDistance, closestDot], currentDot, i) =>
+        const motionDirection = toBinding(Motion).map(ConvertMotionToMoveDirection).getValue();
+        
+        setCursorPosition((currentPosition) =>
+        {
+            let dotsSizeScaledX = 0, dotsSizeScaledY = 0;
+            let cursorSizeScaledX = 0, cursorSizeScaledY = 0
+            
+            if (dotsGuiObjectRef.current)
             {
-                const maybeShortestDistance = (PointInJoyBox.sub(currentDot.AbsolutePosition)).Magnitude;
-                if (!closestDot)
+                const adjust = (size: BindingOrValue<number>) => (["X", "Y"] as const).map((dir) => motionDirection[dir] !== 0 ? (-math.sign(motionDirection[dir]) * ( toBinding(size).getValue() / dotsGuiObjectRef.current!.AbsoluteSize[dir])) : 0);
 
-                    return [maybeShortestDistance, currentDot]
+                [dotsSizeScaledX, dotsSizeScaledY] = adjust(DotSize / 2);
+                [cursorSizeScaledX, cursorSizeScaledY] = adjust(CursorProperties.Size ?? defaultCursorSize);
+            } 
 
-                return maybeShortestDistance < shortestDistance ? [maybeShortestDistance, currentDot] : [shortestDistance, closestDot];
-            }, [0, undefined]);
+            const newPosition = UDim2.fromScale(motionDirection.X + cursorSizeScaledX - dotsSizeScaledX, -motionDirection.Y - cursorSizeScaledY + dotsSizeScaledY);
+            if (currentPosition !== newPosition)
 
-        return new UDim2(motionDirection.X, -motionDirection.Sign().X * (DotSize / 2), motionDirection.Y, -motionDirection.Sign().Y * (DotSize / 2));
-    }, [motionDirection])
+                return newPosition.add(UDim2.fromScale(0.5, 0.5))
 
-    const inputBindingValue = getBindingValue(Input)
+
+            return currentPosition
+        });
+    },
+    [toBinding(Motion), dotsGuiObjectRef.current])
+
+
+    useEffect(() =>
+    {
+        motionState.spring({x: cursorPosition.X.Scale, y: cursorPosition.Y.Scale}, { tension: 600, friction: 34, mass: 0.7 });
+    })
+
     return <frame
         Size = {Size}
         Position = {UDim2.fromScale(0, 0.5)}
@@ -90,11 +88,17 @@ export function Joy(Props: Joy)
         ref={dotsGuiObjectRef}
     >
         <Cursor 
-            Position={cursorPosition}
-            ButtonDisplay={inputBindingValue ? {
-                Label: tostring(inputBindingValue),
-                Color: Color3.fromHSV(math.random(359), 154, 171),
-            }: undefined}
+            Position={interpolatedCursorPositionBinding.map((e) => UDim2.fromScale(e.x, e.y))}
+            ButtonDisplay={
+                toBinding(Input).map((e) => 
+                     e && GGButtons[e as never] ? 
+                        {
+                            Label: e,
+                            Color: GGButtons[e as never]
+                        } 
+                      : undefined).getValue()
+            }
+            key="ligma cursor"
             {...CursorProperties} 
         />
             

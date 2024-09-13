@@ -1,5 +1,5 @@
 import { Controller, OnRender, OnStart } from "@flamework/core";
-import { MotionInputHandling, OnMatchRespawn, Input as InputHandler} from "@quarrelgame-framework/client";
+import { MotionInputHandling, OnMatchRespawn, Input as InputHandler, KeyboardEvents} from "@quarrelgame-framework/client";
 import { ConvertMoveDirectionToMotion, EntityState, Input, Motion, MotionInput } from "@quarrelgame-framework/common";
 import { Managed, ICharacter } from "@quarrelgame-framework/types";
 
@@ -25,7 +25,7 @@ const FrameDataColors =
 ] as const;
 
 @Controller({})
-export class TrainingController implements /* KeyboardEvents, */ OnMatchRespawn, MotionInputHandling, OnStart 
+export class TrainingController implements KeyboardEvents, OnMatchRespawn, MotionInputHandling, OnStart 
 {
     protected trainingIsEnabled = false;
     private trainingFrameDataHighlight = new Instance("Highlight")
@@ -56,8 +56,6 @@ export class TrainingController implements /* KeyboardEvents, */ OnMatchRespawn,
         if (lastInput)
         {
             const inputAsMotion: number | undefined = Motion[Motion[lastInput as never] as keyof typeof Motion] as number | undefined;
-            const inputAsInput: string | undefined = Input[lastInput as never];
-            
             if (inputAsMotion)
             {
                 const moveDirection = this.CharacterController.GetMoveDirection();
@@ -65,14 +63,47 @@ export class TrainingController implements /* KeyboardEvents, */ OnMatchRespawn,
 
                 const motion = Motion[ConvertMoveDirectionToMotion(adaptedMoveDirection)[0]];
                 this.lastMotion = motion;
-            } else this.lastInput = Input[inputAsInput];
+            } else if (typeIs(lastInput, "string")) 
 
-            this.RefreshTrainingUI();
+                this.lastInput = lastInput 
+        } 
+
+        this.RefreshTrainingUI();
+    }
+
+    onKeyReleased(key: InputObject)
+    {
+        const combKeybinds = this.CombatController.GetKeybinds();
+        const pressedCombatButtons = [];
+
+        for (const [keyCode, input] of combKeybinds)
+
+            if (this.Input.IsKeyDown(keyCode))
+
+                pressedCombatButtons.push(input)
+
+        if (!pressedCombatButtons.includes(this.lastInput as Input ?? ""))
+        {
+            const size = pressedCombatButtons.size()
+            if (size > 0)
+            {
+                if (size === 1)
+
+                    this.lastInput = pressedCombatButtons[0];
+
+                else
+
+                    this.lastInput = (pressedCombatButtons as string[]).sort()[0]
+
+            } else this.lastInput = undefined;
         }
+
+        this.RefreshTrainingUI()
     }
 
     public RefreshTrainingUI()
     {
+        print("input to put in:", this.lastInput)
         this.TrainingUIRoot.render(
             createPortal(
                 <Training

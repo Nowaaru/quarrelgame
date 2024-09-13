@@ -21,9 +21,6 @@ interface TrainingOptions
     BFInputListPosition?: number;
 }
 
-
-
-
 export function Training({
     Input: proposedInput,
     Motion: proposedMotion,
@@ -49,9 +46,6 @@ export function Training({
     const displayPosition = useMemo(() => 
         inputDisplayPosition.GetPosition(BFInputDisplayPosition), 
     [inputDisplayPosition])
-
-    proposedInput = toBinding(proposedInput);
-    proposedMotion = toBinding(proposedMotion);
 
     return (
         <frame

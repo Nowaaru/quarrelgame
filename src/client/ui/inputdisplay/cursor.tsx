@@ -1,37 +1,49 @@
-import { BindingOrValue, getBindingValue, toBinding } from "@rbxts/pretty-react-hooks";
-import React, { useCallback } from "@rbxts/react";
+import { BindingOrValue, getBindingValue, toBinding, useMotion } from "@rbxts/pretty-react-hooks";
+import React, { useCallback, useEffect } from "@rbxts/react";
 
 export interface CursorProps {
     ButtonDisplay?: {
-        Label: string;
-        Color: Color3;
+        Label: BindingOrValue<string>;
+        Color: BindingOrValue<Color3>;
     };
 
-    BackgroundColor?: Color3;
-    Size?: number,
-    Position?: BindingOrValue<UDim2>;
+    BackgroundColor?: BindingOrValue<Color3>;
+    Position: BindingOrValue<UDim2>;
+    Size: BindingOrValue<number>,
 
     key?: string;
 }
 
 export function Cursor({
     ButtonDisplay,
-    BackgroundColor = Color3.fromRGB(171, 68, 68),
-    Size = 16,
-    Position = UDim2.fromScale(),
+    BackgroundColor = Color3.fromRGB(128, 128, 128),
+    Size,
+    Position,
     key,
 }: CursorProps) 
 {
     const basePadding = new UDim(0, 2);
     const secondaryPadding = new UDim(0, 1);
-    const calculateSizeAdjustment = useCallback((position) => (-math.sign(position) * (Size)), []);
-    Position = getBindingValue(Position)
-    print(Position)
+    const [sizeData, motion] = useMotion(0)
+
+    useEffect(() =>
+    {
+        motion.immediate(0)
+
+        if (ButtonDisplay)
+
+            motion.tween(1, {
+                time: 0.1,
+                style: Enum.EasingStyle.Sine,
+                direction: Enum.EasingDirection.InOut
+            });
+
+    }, [ButtonDisplay])
 
     return (
         <canvasgroup
-            Size={UDim2.fromOffset(Size,Size)}
-            Position={Position.add(UDim2.fromScale(0.5, 0.5)).add(UDim2.fromOffset(calculateSizeAdjustment(Position.X.Scale), calculateSizeAdjustment(Position.Y.Scale)))}
+            Size={toBinding(Size).map((e) => UDim2.fromOffset(e,e))}
+            Position={toBinding(Position)}
             BackgroundColor3={BackgroundColor}
             SizeConstraint={Enum.SizeConstraint.RelativeXX}
             AnchorPoint={new Vector2(0.5, 0.5)}
@@ -53,12 +65,12 @@ export function Cursor({
             />
             <textlabel
                 Position={UDim2.fromScale(0.5, 0.5)}
-                Size={UDim2.fromScale(1, 1)}
+                Size={sizeData.map((e) => UDim2.fromScale(e,e))}
                 Rotation={0}
-                BackgroundColor3={ButtonDisplay?.Color ?? BackgroundColor}
-                Text={ButtonDisplay?.Label ?? ""}
+                BackgroundColor3={toBinding(ButtonDisplay?.Color ?? BackgroundColor)}
+                Text={toBinding(ButtonDisplay?.Label ?? "")}
                 FontFace={Font.fromEnum(Enum.Font.FredokaOne)}
-                TextSize={16}
+                TextSize={sizeData.map((e) => e * 13.5)}
                 TextColor3={new Color3(1, 1, 1)}
                 AnchorPoint={new Vector2(0.5,0.5)}
                 key="PressedButton"
