@@ -18,10 +18,6 @@ const getMover = (entity: Entity) =>
     return components.getComponent<AttachmentMoverComponent>(root) ?? components.addComponent<AttachmentMoverComponent>(root);
 }
 
-const spinCleanup = (entity: Entity) =>
-{
-};
-
 export const RollingMovement = new Skill.SkillBuilder()
     .SetName("Rolling Movement")
     .SetGroundedType(Skill.SkillGroundedType.AirOk)
