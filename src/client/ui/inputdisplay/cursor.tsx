@@ -31,13 +31,13 @@ export function Cursor({
         motion.immediate(0)
 
         if (ButtonDisplay)
-
+        {
             motion.tween(1, {
                 time: 0.1,
                 style: Enum.EasingStyle.Sine,
                 direction: Enum.EasingDirection.InOut
             });
-
+        }
     }, [ButtonDisplay])
 
     return (
