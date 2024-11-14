@@ -42,9 +42,9 @@ export default class AttachmentMoverComponent extends BaseComponent<MoverAttribu
         MaxTorque: this.attributes.RotationVelocity ?? (this.attributes.Velocity / 8),
     });
 
-    public IsAtDestination()
+    public IsAtDestination(radius = 0.1)
     {
-        return this.velocityInstance.Position.sub(this.instance.WorldPosition).Magnitude <= 0.1;
+        return this.velocityInstance.Position.sub(this.instance.WorldPosition).Magnitude <= radius;
     }
 
     public Go(position: Vector3)
