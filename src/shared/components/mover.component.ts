@@ -5,7 +5,6 @@ import { Players, RunService, Workspace } from "@rbxts/services";
 import { ICharacter } from "@quarrelgame-framework/types";
 
 interface MoverAttributes {
-    Direction?: Vector3,
     Distance: number,
     Velocity: number,
 
@@ -23,7 +22,7 @@ export const defaultMoverAttributes = {
 @Component({
     defaults: defaultMoverAttributes
 })
-export default class AttachmentMoverComponent extends BaseComponent<MoverAttributes, Attachment> implements OnStart, OnPhysics
+export default class AttachmentMoverComponent extends BaseComponent<MoverAttributes, Attachment> implements OnStart
 {
     public velocityInstance = Make("AlignPosition", {
         Enabled: true,
@@ -72,22 +71,8 @@ export default class AttachmentMoverComponent extends BaseComponent<MoverAttribu
     }
 
 
-    private lastPosition: Vector3 = Vector3.zero;
-    onPhysics(): void 
-    {
-        if (this.velocityInstance.Enabled && !this.velocityInstance.RigidityEnabled)
         {
-            if (this.IsAtDestination())
-            {
-                this.angularVelocityInstance.AngularVelocity = Vector3.zero;
-                return;
-            }
-
-            const positionDelta = this.lastPosition.sub(this.instance.WorldPosition).Unit.Dot(this.attributes.Direction ?? (this.velocityInstance.Position.sub(this.instance.WorldPosition).Unit))
-            this.angularVelocityInstance.AngularVelocity = new Vector3(this.attributes.Velocity * 0.125 * math.sign(positionDelta));
         }
-
-        this.lastPosition = this.instance.WorldPosition;
     }
 
 }
