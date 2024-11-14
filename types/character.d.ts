@@ -7,6 +7,7 @@ declare global {
         brighteyes: CharacterRig,
         dusek: CharacterRig,
         death: CharacterRig,
+        basket: CharacterRig,
         shedletsky: CharacterRig,
         roblox: CharacterRig
     }
