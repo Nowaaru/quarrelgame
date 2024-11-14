@@ -63,15 +63,29 @@ export default class AttachmentMoverComponent extends BaseComponent<MoverAttribu
     }
 
     onStart(): void 
+    public Cleanup(destroyInstance = true)
     {
         this.velocityInstance.Parent = this.instance;
         this.angularVelocityInstance.Parent = this.instance;
 
         this.Stop();
     }
+        Dependency<Components>().removeComponent<AttachmentMoverComponent>(this.instance);
+        if (destroyInstance)
 
+            this.instance.Destroy();
 
+        else
         {
+            this.velocityInstance = this.velocityInstance.Destroy() as never;
+            this.angularVelocityInstance = this.angularVelocityInstance.Destroy() as never;
+            
+            // setmetatable(this, { 
+            //     __index: () =>
+            //     {
+            //         throw "This mover has already been cleaned up. Please remove this referenced."
+            //     },
+            // });
         }
     }
 
