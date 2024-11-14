@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect, useLayoutEffect, useMemo, useRef, useState } from "@rbxts/react";
+import React, { PropsWithChildren, useBinding, useEffect, useLayoutEffect, useMemo, useRef, useState } from "@rbxts/react";
 
 import { Components } from "@flamework/components";
 import { Dependency } from "@flamework/core";
@@ -40,6 +40,7 @@ export const CharacterPortrait3D = ({
     const [viewportCamera, setViewportCamera] = useState<Camera | undefined>();
     const [characterModel, setCharacterModel] = useState<Character.Character["Model"] | undefined>();
     const [worldModel, setWorldModel] = useState<WorldModel>();
+    const [currentAnimator, setCurrentAnimator] = useState<Animator>();
 
     const viewportClone = useMemo(() =>
     {
@@ -90,12 +91,11 @@ export const CharacterPortrait3D = ({
 
             if (!characterModelClone.Humanoid.FindFirstChildWhichIsA("Animator"))
             {
-                Make("Animator", {
+                setCurrentAnimator(Make("Animator", {
                     Parent: characterModelClone.Humanoid,
-                });
+                }));
             }
 
-            characterModelClone.Parent = worldModel;
             characterModelClone.PivotTo(
                 new CFrame(
                     new CFrame().ToObjectSpace(CameraFocus.CFrame).Position,
@@ -106,6 +106,8 @@ export const CharacterPortrait3D = ({
                     ),
                 ),
             );
+
+            characterModelClone.Parent = worldModel;
         });
     }, [Character, characterModel, worldModel, viewportCamera, viewportFrame.current, viewportClone]);
 
@@ -136,6 +138,10 @@ export const CharacterPortrait3D = ({
             {
                 return print("no character model parent");
             }
+
+            if (!currentAnimator)
+
+                return warn("no animator");
 
             characterModelClone.SetAttribute("CharacterId", Character.Name);
             if (Animation !== undefined)
@@ -171,7 +177,7 @@ export const CharacterPortrait3D = ({
                 }
             }
         });
-    }, [characterModel, Animation, viewportClone]);
+    }, [characterModel, Animation, viewportClone, currentAnimator]);
 
     return (
         <textbutton
