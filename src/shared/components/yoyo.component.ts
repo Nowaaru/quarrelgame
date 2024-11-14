@@ -142,6 +142,4 @@ export default class YoyoComponent extends BaseComponent<YoyoAttributes, YoyoObj
             });
         }
     }
-
-
 }
