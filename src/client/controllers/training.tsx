@@ -21,7 +21,6 @@ const FrameDataColors =
     [EntityState.Recovery, Color3.fromRGB(0,255,0)],
     [EntityState.Landing, Color3.fromRGB(120,120,255)],
     [EntityState.Jumping, Color3.fromRGB(120,120,255)],
-
 ] as const;
 
 @Controller({})
