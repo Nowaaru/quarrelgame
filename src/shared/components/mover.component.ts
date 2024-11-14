@@ -62,14 +62,8 @@ export default class AttachmentMoverComponent extends BaseComponent<MoverAttribu
         this.velocityInstance.Position = this.instance.WorldPosition;
     }
 
-    onStart(): void 
     public Cleanup(destroyInstance = true)
     {
-        this.velocityInstance.Parent = this.instance;
-        this.angularVelocityInstance.Parent = this.instance;
-
-        this.Stop();
-    }
         Dependency<Components>().removeComponent<AttachmentMoverComponent>(this.instance);
         if (destroyInstance)
 
@@ -89,4 +83,11 @@ export default class AttachmentMoverComponent extends BaseComponent<MoverAttribu
         }
     }
 
+    onStart(): void 
+    {
+        this.velocityInstance.Parent = this.instance;
+        this.angularVelocityInstance.Parent = this.instance;
+
+        this.Stop();
+    }
 }
