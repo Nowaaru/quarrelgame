@@ -3,6 +3,7 @@ import { Component, BaseComponent, Components } from "@flamework/components";
 import Make from "@rbxts/make";
 import { Players, RunService, Workspace } from "@rbxts/services";
 import { ICharacter } from "@quarrelgame-framework/types";
+import MoverComponent from "./mover.component";
 
 export enum YOYO_TYPE {
     PASSIVE,
@@ -18,9 +19,9 @@ interface YoyoObject extends MeshPart {
 
 interface YoyoAttributes {
     Type: YOYO_TYPE
-    Velocity: number,
     Distance: number,
 
+    Velocity: number,
     Direction?: Vector3,
     Owner: string,
 
@@ -41,54 +42,29 @@ interface YoyoAttributes {
         CreationTime: -1,
     }
 })
+
 export default class YoyoComponent extends BaseComponent<YoyoAttributes, YoyoObject> implements OnStart, OnPhysics, OnTick
 {
     public readonly characterOwner = Workspace.WaitForChild("CharacterContainer").GetChildren().find((e) => !!e.GetAttribute("EntityId")) as ICharacter;
     
     public readonly ownerPivotAtCreation = this.characterOwner.GetPivot();
 
-    public velocityInstance = Make("AlignPosition", {
-        Enabled: true,
-        Attachment0: this.instance.YoyoAttachment,
-        Mode: Enum.PositionAlignmentMode.OneAttachment,
-        MaxAxesForce: new Vector3(this.attributes.Velocity, math.huge, this.attributes.Velocity),
-        MaxVelocity: math.huge,
-        ForceLimitMode: Enum.ForceLimitMode.PerAxis,
-        ForceRelativeTo: Enum.ActuatorRelativeTo.World,
-        Responsiveness: 100,
-    });
-
-    public angularVelocityInstance = Make("AngularVelocity", {
-        Attachment0: this.instance.YoyoAttachment,
-        RelativeTo: Enum.ActuatorRelativeTo.Attachment0,
-        AngularVelocity: new Vector3(this.attributes.Velocity),
-        MaxTorque: this.attributes.Velocity / 8,
-    });
-
-    public IsAtDestination()
-    {
-        return this.velocityInstance.Position.sub(this.instance.Position).Magnitude <= 0.1;
-    }
+    protected mover!: MoverComponent;
 
     public Go(direction = this.attributes.Direction, distance = this.attributes.Distance)
     {
-        this.instance.Anchored = false;
-        this.velocityInstance.RigidityEnabled = false;
-
-        this.velocityInstance.Position = this.characterOwner.GetPivot().Position.add((direction ?? this.characterOwner.GetPivot().LookVector).mul(distance));
-        this.velocityInstance.MaxVelocity = this.attributes.Velocity
-        this.velocityInstance.MaxAxesForce = new Vector3(this.attributes.Velocity * 16, this.attributes.Velocity * 16, this.attributes.Velocity * 16),
-        this.velocityInstance.Enabled = true;
+        this.mover.Go(this.instance.Position.add(direction ?? this.characterOwner.GetPivot().LookVector.mul(distance)));
     }
 
     public Stop()
     {
-        this.velocityInstance.RigidityEnabled = true;
-        this.velocityInstance.Position = this.instance.Position;
+        this.mover.Stop();
     }
 
     onStart(): void 
     {
+        const mover = this.mover = Dependency<Components>().addComponent<MoverComponent>(this.instance.YoyoAttachment);
+
         // get character owner, error if it doesn't exist
         if (this.attributes.CreationTime === -1)
 
@@ -101,9 +77,7 @@ export default class YoyoComponent extends BaseComponent<YoyoAttributes, YoyoObj
 
         // set default position to the facing direction of the character
         // plus the width in that direction
-        this.velocityInstance.Parent = this.instance;
-        this.angularVelocityInstance.Parent = this.instance;
-        print(`Yoyo Instance belonging to ${this.attributes.Owner} of type ${YOYO_TYPE[this.attributes.Type]} initialized.`) 
+        print(`Velocity Instance belonging to ${this.attributes.Owner} of type ${YOYO_TYPE[this.attributes.Type]} initialized.`) 
 
         const characterPivot = this.characterOwner.GetPivot();
         const { LookVector } = characterPivot;
@@ -118,29 +92,28 @@ export default class YoyoComponent extends BaseComponent<YoyoAttributes, YoyoObj
     private lastPosition: Vector3 = Vector3.zero;
     onPhysics(dt: number, time: number): void 
     {
-        if (this.velocityInstance.Enabled && !this.velocityInstance.RigidityEnabled)
+        if (this.mover.velocityInstance.Enabled && !this.mover.velocityInstance.RigidityEnabled)
         {
-            if (this.IsAtDestination())
+            if (this.mover.IsAtDestination())
             {
-                this.angularVelocityInstance.AngularVelocity = Vector3.zero;
+                this.mover.angularVelocityInstance.AngularVelocity = Vector3.zero;
                 return;
             }
 
-            const positionDelta = this.lastPosition.sub(this.instance.Position).Unit.Dot(this.attributes.Direction ?? (this.velocityInstance.Position.sub(this.instance.Position).Unit))
-            this.angularVelocityInstance.AngularVelocity = new Vector3(this.attributes.Velocity * 0.125 * math.sign(positionDelta));
+            const positionDelta = this.lastPosition.sub(this.instance.Position).Unit.Dot(this.attributes.Direction ?? (this.mover.velocityInstance.Position.sub(this.instance.Position).Unit))
+            this.mover.angularVelocityInstance.AngularVelocity = new Vector3(this.attributes.Velocity * 0.125 * math.sign(positionDelta));
         }
 
         this.lastPosition = this.instance.Position;
     }
 
     private destinationTicks: number = 0;
-    private isDestroying: boolean = false;
     onTick(dt: number)
     {
-        if (this.IsAtDestination())
-
+        if (this.mover.IsAtDestination())
+        
             this.destinationTicks += dt
-
+       
         else
 
             this.destinationTicks = 0;
@@ -159,9 +132,9 @@ export default class YoyoComponent extends BaseComponent<YoyoAttributes, YoyoObj
                                 tickLoop = 
                                     RunService.Heartbeat.Connect(() => 
                                     {
-                                        this.velocityInstance.Position = this.characterOwner.GetPivot().Position;
-                                        this.velocityInstance.MaxVelocity = this.attributes.Velocity * 2.25;
-                                        if (this.IsAtDestination())
+                                        this.mover.velocityInstance.Position = this.characterOwner.GetPivot().Position;
+                                        this.mover.velocityInstance.MaxVelocity = this.attributes.Velocity * 2.25;
+                                        if (this.mover.IsAtDestination())
 
                                             res(0) 
                                     }))
@@ -169,4 +142,6 @@ export default class YoyoComponent extends BaseComponent<YoyoAttributes, YoyoObj
             });
         }
     }
+
+
 }
