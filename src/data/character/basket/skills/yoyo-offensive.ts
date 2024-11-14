@@ -29,10 +29,13 @@ export const YoyoOffensive = new Skill.SkillBuilder()
                 assert(yoyoInstance, "yoyo could not be created (not found?)");
 
                 yoyoInstance.SetAttribute("Owner", entity.attributes.EntityId);
+                yoyoInstance.SetAttribute("Direction", entity.instance.GetPivot().LookVector);
                 yoyoState.registerYoyo(entity, yoyoInstance as MeshPart);
 
                 yoyoInstance.Parent = entity.instance;
+
                 Dependency<Components>().addComponent<YoyoComponent>(yoyoInstance);
+                
             })
             .SetAnimation(
                 new Animation.AnimationBuilder()
