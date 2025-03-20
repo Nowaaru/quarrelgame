@@ -2,13 +2,48 @@
 import { QGCharacter, EntityState, Input, Hitbox, Character, Skill, Animation, Motion, MotionInput, Entity, SkillLike } from "@quarrelgame-framework/common";
 import { ICharacterR6 } from "@quarrelgame-framework/types";
 import YoyoOffensive from "./skills/yoyo-offensive";
-import RollingMovement from "./skills/spin";
 
+import RollingMovement from "./skills/rolling-movement";
+import StandingKick from "./normals/5k";
+
+import CloseSlash from "./normals/cs";
+import FarSlash from "./normals/fs";
+
+import CrouchingKick from "./normals/2k";
+import CrouchingPunch from "./normals/2p";
+import CrouchingHeavy from "./normals/2h";
+import CrouchingSlash from "./normals/2s";
+import StandingPunch from "./normals/5p";
+import ForwardKick from "./normals/6k";
+import HeavySlash from "./normals/5h";
+
+const CLOSE_SLASH_RANGE = 16;
 @QGCharacter({
     id: "basket",
     skills: [ 
-        [[ Motion.Down, Motion.DownForward, Motion.Forward, Input.Slash ], YoyoOffensive],
-        [[ Motion.Down, Motion.DownBack, Motion.Back, Input.Slash ], RollingMovement]
+        [[ Motion.Down, Motion.DownForward, Motion.Forward, Motion.Forward | Input.Slash ], YoyoOffensive],
+        [[ Motion.Down, Motion.DownBack, Motion.Back, Motion.Back | Input.Kick ], RollingMovement],
+
+        [[ Motion.Down | Input.Kick], CrouchingKick],
+        [[ Motion.Down | Input.Punch], CrouchingPunch],
+        [[ Motion.Down | Input.Heavy], CrouchingHeavy],
+        [[ Motion.Down | Input.Slash], CrouchingSlash],
+
+        [[ Motion.Forward | Input.Kick ], ForwardKick ],
+
+        [[ Input.Kick ], StandingKick ],
+        [[ Input.Punch ], StandingPunch ],
+        [[ Input.Heavy ], HeavySlash],
+        [[ Input.Slash ], ({closeEnemies}) => 
+        {
+            if (closeEnemies.size() > 0)
+
+                return CloseSlash
+
+            else 
+
+                return FarSlash
+        }],
     ],
     setup: (baller) =>
     {
@@ -35,18 +70,18 @@ export default class basket implements Character.Character
         [ EntityState.Idle ]: 
             new Animation.AnimationBuilder()
                 .SetName("Idle")
-                .SetAnimationId("rbxassetid://93505672243585")
+                .SetAnimationId("rbxassetid://96287370938132")
                 .SetPriority(Enum.AnimationPriority.Idle)
                 .SetLooped(true)
                 .Construct(),
         [ EntityState.Crouch ]:
             new Animation.AnimationBuilder() 
                 .SetName("Crouch")
-                .SetAnimationId("rbxassetid://101279523463524")
+                .SetAnimationId("rbxassetid://71664244638862")
                 .LinksInto(
                     new Animation.AnimationBuilder()
                         .SetName("CrouchHold")
-                        .SetAnimationId("rbxassetid://103639389253526")
+                        .SetAnimationId("rbxassetid://71664244638862")
                         .SetPriority(Enum.AnimationPriority.Movement)
                         .SetLooped(true)
                         .Construct()
@@ -57,27 +92,27 @@ export default class basket implements Character.Character
         [ EntityState.Walk ]:
             new Animation.AnimationBuilder()
                 .SetName("Walk")
-                .SetAnimationId("rbxassetid://14488005454")
+                .SetAnimationId("rbxassetid://138193871930986")
                 .SetPriority(Enum.AnimationPriority.Movement)
                 .SetLooped(true)
                 .Construct(),
         [ EntityState.Jumping ]:
             new Animation.AnimationBuilder()
                 .SetName("JumpStart")
-                .SetAnimationId("rbxassetid://84998583229461")
+                .SetAnimationId("rbxassetid://131669916641213")
                 .SetPriority(Enum.AnimationPriority.Movement)
                 .SetLooped(false)
                 .Construct(),
         [ EntityState.Midair ]:
             new Animation.AnimationBuilder()
                 .SetName("JumpMidair")
-                .SetAnimationId("rbxassetid://77360677996004")
+                .SetAnimationId("rbxassetid://112745987087353")
                 .SetPriority(Enum.AnimationPriority.Movement)
                 .SetLooped(false)
                     .LinksInto(
                         new Animation.AnimationBuilder()
                             .SetName("JumpMidairIdle")
-                            .SetAnimationId("rbxassetid://122284459150216")
+                            .SetAnimationId("rbxassetid://125106233250434")
                             .SetPriority(Enum.AnimationPriority.Movement)
                             .SetLooped(true)
                             .Construct()
@@ -86,7 +121,7 @@ export default class basket implements Character.Character
         [EntityState.Landing]:
             new Animation.AnimationBuilder()
                 .SetName("Land")
-                .SetAnimationId("rbxassetid://81632743307571")
+                .SetAnimationId("rbxassetid://134104429277823")
                 .SetPriority(Enum.AnimationPriority.Action)
                 .SetLooped(false)
                 .Construct(),

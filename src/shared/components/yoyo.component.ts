@@ -4,12 +4,7 @@ import Make from "@rbxts/make";
 import { Players, RunService, Workspace } from "@rbxts/services";
 import { ICharacter } from "@quarrelgame-framework/types";
 import MoverComponent from "./mover.component";
-
-export enum YOYO_TYPE {
-    PASSIVE,
-    DEFENSIVE,
-    OFFENSIVE,
-}
+import yoyoState, { YOYO_TYPE } from "data/character/basket/util/yoyo-state";
 
 interface YoyoObject extends MeshPart {
    TopYoyoAttachment: Attachment,
@@ -53,7 +48,8 @@ export default class YoyoComponent extends BaseComponent<YoyoAttributes, YoyoObj
 
     public Go(direction = this.attributes.Direction, distance = this.attributes.Distance)
     {
-        this.mover.Go(this.instance.Position.add(direction ?? this.characterOwner.GetPivot().LookVector.mul(distance)));
+        this.mover.Go(this.instance.Position.add((direction ?? this.characterOwner.GetPivot().LookVector).mul(distance)));
+        warn(`yoyo (${this.attributes.Owner}): going`);
     }
 
     public Stop()
@@ -63,7 +59,7 @@ export default class YoyoComponent extends BaseComponent<YoyoAttributes, YoyoObj
 
     onStart(): void 
     {
-        const mover = this.mover = Dependency<Components>().addComponent<MoverComponent>(this.instance.YoyoAttachment);
+        this.mover = Dependency<Components>().addComponent<MoverComponent>(this.instance.YoyoAttachment);
 
         // get character owner, error if it doesn't exist
         if (this.attributes.CreationTime === -1)
@@ -83,13 +79,11 @@ export default class YoyoComponent extends BaseComponent<YoyoAttributes, YoyoObj
         const { LookVector } = characterPivot;
 
         this.instance.PivotTo(characterPivot.add(LookVector.mul(2)))
-        this.Stop();
-        warn(`yoyo (${this.attributes.Owner}): going`);
-        this.Go();
     }
 
 
     private lastPosition: Vector3 = Vector3.zero;
+    private prevTorque?: number = -1;
     onPhysics(dt: number, time: number): void 
     {
         if (this.mover.velocityInstance.Enabled && !this.mover.velocityInstance.RigidityEnabled)
@@ -97,11 +91,22 @@ export default class YoyoComponent extends BaseComponent<YoyoAttributes, YoyoObj
             if (this.mover.IsAtDestination())
             {
                 this.mover.angularVelocityInstance.AngularVelocity = Vector3.zero;
+                this.mover.angularVelocityInstance.MaxTorque = 1273;
+                if (!this.prevTorque)
+
+                    this.prevTorque = this.mover.angularVelocityInstance.MaxTorque;
+
                 return;
             }
 
             const positionDelta = this.lastPosition.sub(this.instance.Position).Unit.Dot(this.attributes.Direction ?? (this.mover.velocityInstance.Position.sub(this.instance.Position).Unit))
             this.mover.angularVelocityInstance.AngularVelocity = new Vector3(this.attributes.Velocity * 0.125 * math.sign(positionDelta));
+
+            if (this.prevTorque)
+            {
+                this.mover.angularVelocityInstance.MaxTorque = this.prevTorque;
+                this.prevTorque = undefined;
+            }
         }
 
         this.lastPosition = this.instance.Position;
@@ -120,8 +125,8 @@ export default class YoyoComponent extends BaseComponent<YoyoAttributes, YoyoObj
         
         if (this.destinationTicks >= this.attributes.Duration)
         {
-            warn(`yoyo (${this.attributes.Owner}): destroying`);
             Dependency<Components>().removeComponent<YoyoComponent>(this.instance);
+            yoyoState.unregisterYoyo(this.instance);
 
             let tickLoop: RBXScriptConnection | void;
             return new Promise((res) =>
@@ -138,7 +143,11 @@ export default class YoyoComponent extends BaseComponent<YoyoAttributes, YoyoObj
 
                                             res(0) 
                                     }))
-                ]).then(() => tickLoop = tickLoop?.Disconnect()).finally(() => this.instance.Destroy()))
+                ]).then(() => tickLoop = tickLoop?.Disconnect()).finally(() => 
+                {
+                    warn(`yoyo (${this.attributes.Owner}): destroying`);
+                    this.instance.Destroy()
+                }))
             });
         }
     }

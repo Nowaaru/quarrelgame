@@ -1,22 +1,25 @@
-import { Animation, Skill, Hitbox, Motion, Input, QuarrelAssets, Character } from "@quarrelgame-framework/common";
+import { Animation, Skill, Hitbox, QuarrelAssets, QGSkill } from "@quarrelgame-framework/common";
 import yoyoState from "../util/yoyo-state";
-import { ReplicatedStorage } from "@rbxts/services";
-import YoyoComponent, { YOYO_TYPE } from "shared/components/yoyo.component";
+import YoyoComponent from "shared/components/yoyo.component";
 import { Dependency } from "@flamework/core";
 import { Components } from "@flamework/components";
-import CharactersList from "data/character";
 const startupFrames = 18;
 
-export const YoyoOffensive = new Skill.SkillBuilder()
-    .SetName("Stop and Go - Offensive")
-    .SetGroundedType(Skill.SkillGroundedType.Ground)
-    .SetFrameData(
-        new Skill.FrameDataBuilder()
+@QGSkill({
+    id: "bridget.stopandgoA"
+})
+export default class YoyoOffensive extends Skill.Skill
+{
+    Name = "Stop and Go - Offensive";
+    GroundedType = Skill.SkillGroundedType.Ground
+
+    FrameData = new Skill.FrameDataBuilder()
             .SetStartup(startupFrames)
             .SetActive(0)
             .SetRecovery(10)
             .SetContact(0) 
             .SetBlockAdvantage(0)
+            .SetCondition((entity) => !yoyoState.getYoyo(entity))
             .SetHitbox(
                 new Hitbox.HitboxBuilder()
                     .SetOffset(new Vector3(0, 0, 0))
@@ -29,12 +32,14 @@ export const YoyoOffensive = new Skill.SkillBuilder()
                 assert(yoyoInstance, "yoyo could not be created (not found?)");
 
                 yoyoInstance.SetAttribute("Owner", entity.attributes.EntityId);
+                yoyoInstance.SetAttribute("Distance", 32);
+                yoyoInstance.SetAttribute("Velocity", 16);
                 yoyoInstance.SetAttribute("Direction", entity.instance.GetPivot().LookVector);
                 yoyoState.registerYoyo(entity, yoyoInstance as MeshPart);
 
-                yoyoInstance.Parent = entity.instance;
-
-                Dependency<Components>().addComponent<YoyoComponent>(yoyoInstance);
+                // TODO: make a place for these kinds of projectiles to go
+                yoyoInstance.Parent = entity.instance.Parent;
+                Dependency<Components>().addComponent<YoyoComponent>(yoyoInstance).Go();
                 
             })
             .SetAnimation(
@@ -44,8 +49,5 @@ export const YoyoOffensive = new Skill.SkillBuilder()
                     .SetAnimationId("rbxassetid://132813071138892")
                     .SetPriority(Enum.AnimationPriority.Action)
                     .Construct(),
-            ),
-    )
-    .Construct();
-
-export default YoyoOffensive;
+            ).Construct()
+}

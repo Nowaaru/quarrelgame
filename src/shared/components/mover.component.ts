@@ -5,7 +5,6 @@ import { Players, RunService, Workspace } from "@rbxts/services";
 import { ICharacter } from "@quarrelgame-framework/types";
 
 interface MoverAttributes {
-    Distance: number,
     Velocity: number,
 
     RotationEnabled: boolean,
@@ -15,7 +14,6 @@ interface MoverAttributes {
 
 export const defaultMoverAttributes = {
     Velocity: 48,
-    Distance: 16,
     RotationEnabled: false,
 }
 
@@ -49,11 +47,21 @@ export default class AttachmentMoverComponent extends BaseComponent<MoverAttribu
 
     public Go(position: Vector3)
     {
+        this.velocityInstance.MaxVelocity = this.attributes.Velocity;
+        this.velocityInstance.MaxForce = this.attributes.Velocity;
+
         this.velocityInstance.RigidityEnabled = false;
         this.velocityInstance.Position = position;
-        this.velocityInstance.MaxVelocity = this.attributes.Velocity
-        this.velocityInstance.MaxAxesForce = new Vector3(this.attributes.Velocity * 16, this.attributes.Velocity * 16, this.attributes.Velocity * 16),
         this.velocityInstance.Enabled = true;
+
+        this.ResetInstance();
+    }
+
+    public ResetInstance()
+    {
+        this.velocityInstance.MaxVelocity = this.attributes.Velocity
+        this.velocityInstance.ForceLimitMode = Enum.ForceLimitMode.PerAxis;
+        this.velocityInstance.MaxAxesForce = new Vector3(...table.create(3, this.attributes.Velocity));
     }
 
     public Stop()
